@@ -7,7 +7,7 @@
   "scripts": {
     "build": "node build.js",
     "sync": "browser-sync -w --index index.watch.html",
-    "watch-js": "nodemon src --exec \"node build.js\"",
+    "watch-js": "chokidar src/**/* -c node build.js",
     "dev": "npm-run-all --parallel watch-js sync",
     "watch": "npm-run-all build dev"
   },
@@ -23,8 +23,8 @@
   "homepage": "https://github.com/burntcustard/js1024-eye-tubes#readme",
   "devDependencies": {
     "browser-sync": "^3.0.4",
+    "chokidar-cli": "^3.0.0",
     "html-minifier": "^4.0.0",
-    "nodemon": "^3.1.10",
     "npm-run-all": "^4.1.5",
     "regpack": "^5.0.1",
     "terser": "^5.43.1"
