@@ -19,6 +19,7 @@ const options = {
     },
     // Don't mangle 'a' as it is used in the packed code.
     // RegPack by default ignores a, b, c, d, and g
+    // This is needed to have duplicate CSS strings that pack well.
     reserved: ['a'],
   },
   format: {
@@ -69,9 +70,9 @@ js = js
 
 const packed = cmdRegPack(code, {
   // withMath: true, // Sometimes worth wrapping with Math()
-  crushGainFactor: parseFloat(2),
+  crushGainFactor: parseFloat(7),
   crushLengthFactor: parseFloat(1),
-  crushCopiesFactor: parseFloat(1),
+  crushCopiesFactor: parseFloat(0),
 });
 
 const html = readFileSync('src/index.html', 'utf8');
