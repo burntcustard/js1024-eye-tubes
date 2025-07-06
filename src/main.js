@@ -17,7 +17,7 @@ const eyeTypes = [
   // reptile
   '#fa0',
   '#000',
-  'scale(.1,.4)',
+  'scale(.4,.1)',
   // owl
   '#fe0',
   '#000',
@@ -25,6 +25,7 @@ const eyeTypes = [
   // spider
   '#000',
   '#eee',
+  // Translate is by a really weird number but it compresses well
   `scale(.2,.1)translatey(-${(eyeSize + tubeBorderWidth * 2) * 2}px)`
 ];
 
