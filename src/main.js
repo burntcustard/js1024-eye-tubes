@@ -20,19 +20,20 @@ const eyeTypes = [
   '#000',
   'scale(.1,.4)',
   // owl
-  '#fd0',
+  '#fe0',
   '#000',
   'scale(.4,.4)',
   // spider
   '#000',
   '#eee',
-  `scale(.2,.1)translate(0,-${(eyeSize + tubeBorderWidth * 2) * 2}px)`
+  `scale(.2,.1)translatey(-${(eyeSize + tubeBorderWidth * 2) * 2}px)`
 ];
 
 const createEye = (eyeTypeIndex) => {
   const outerEye = document.createElement('div');
   const innerEye = document.createElement('div');
-  outerEye.style.position = 'absolute';
+  // position absolute makes more sense but fixed is fewer characters
+  outerEye.style.position = 'fixed';
   outerEye.style.width = innerEye.style.width = `${eyeSize}px`;
   outerEye.style.height = innerEye.style.height = `${eyeSize}px`;
   outerEye.style.borderRadius = innerEye.style.borderRadius = `${eyeSize}px`;
@@ -48,10 +49,10 @@ const createEye = (eyeTypeIndex) => {
 const renderAllEyes = () => {
   tubes.forEach((tube, tubeIndex) => {
     tube.eyes.forEach((eyeElement, eyePosition) => {
-      const yPos = eyeSize - eyePosition * eyeSize;
-      const xPos = (tubes.length / 2 - tubeIndex - 0.5) * (eyeSize + tubeBorderWidth * 2 + testTubeGap) + eyeSize / 2;
-      eyeElement.style.left = `calc(50% - ${xPos}px)`;
-      eyeElement.style.top = `calc(50% + ${yPos}px)`;
+      eyeElement.style.left =
+        `calc(50% - ${(tubes.length / 2 - tubeIndex - 0.5) * (eyeSize + tubeBorderWidth * 2 + testTubeGap) + eyeSize / 2}px)`;
+      eyeElement.style.top =
+        `calc(50% + ${eyeSize - eyePosition * eyeSize}px)`;
     });
   });
 }
@@ -78,17 +79,12 @@ const startGame = () => {
     eyes: []
   });
 
-  // Set body background to black
-  b.style.background = '#237';
-
   // Add ALL tubes to DOM second (so they render on top of eyes)
   tubes.forEach((tube, tubeIndex) => {
     // Create tube container for visual border
     const tubeElement = document.createElement('button');
-    const yPos = 2 * eyeSize + tubeBorderWidth;
-    const xPos = (tubes.length / 2 - tubeIndex - 0.5) * (eyeSize + tubeBorderWidth * 2 + testTubeGap) + (eyeSize + tubeBorderWidth * 2) / 2;
-    tubeElement.style.left = `calc(50% - ${xPos}px)`;
-    tubeElement.style.top = `calc(50% - ${yPos}px)`;
+    tubeElement.style.left = `calc(50% - ${(tubes.length / 2 - tubeIndex - 0.5) * (eyeSize + tubeBorderWidth * 2 + testTubeGap) + (eyeSize + tubeBorderWidth * 2) / 2}px)`;
+    tubeElement.style.top = `calc(50% - ${2 * eyeSize + tubeBorderWidth}px)`;
     // Chrome/Firefox use 3px/medium by default for button border
     tubeElement.style.border = `solid#fff`;
     tubeElement.style.borderTop = '0';
@@ -97,7 +93,7 @@ const startGame = () => {
     tubeElement.style.padding = '0';
     tubeElement.style.width = `${eyeSize + tubeBorderWidth * 2}px`;
     tubeElement.style.height = `${4 * eyeSize + tubeBorderWidth * 2}px`;
-    tubeElement.style.position = 'absolute';
+    tubeElement.style.position = 'fixed';
 
     // Add click handler to move top eye
     tubeElement.onclick = () => {
@@ -107,8 +103,7 @@ const startGame = () => {
           const originalTubeIndex = floatingEye.originalTubeIndex;
 
           // Position horizontally above the new tube first
-          const xPos = (tubes.length / 2 - tubeIndex - 0.5) * (eyeSize + tubeBorderWidth * 2 + testTubeGap) + eyeSize / 2;
-          floatingEye.style.left = `calc(50% - ${xPos}px)`;
+          floatingEye.style.left = `calc(50% - ${(tubes.length / 2 - tubeIndex - 0.5) * (eyeSize + tubeBorderWidth * 2 + testTubeGap) + eyeSize / 2}px)`;
           tube.eyes.push(floatingEye);
           floatingEye = 0; // Clear the floating eye
 
@@ -122,10 +117,11 @@ const startGame = () => {
       }
 
       if (
-        gameStarted &&
-        // tubeIndex is unused but helps with compression
+        // bitwise AND `&` works here because we only care about truthiness
+        gameStarted &
+        // tubeIndex and eye are unused but help with compression
         tubes.every((tube, tubeIndex) =>
-          tube.eyes.every((_, eyeIndex) =>
+          tube.eyes.every((eye, eyeIndex) =>
             tube.eyes[3]?.style.background === tube.eyes[eyeIndex].style.background
           )
         )
@@ -159,5 +155,8 @@ const startGame = () => {
 
   gameStarted = true;
 }
+
+// Set body background to dark purply blue
+b.style.background = '#237';
 
 startGame();
