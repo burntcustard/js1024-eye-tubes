@@ -58,7 +58,9 @@ js = js
   const minifiedJs = await minifyJs(js, options);
 
   const code = minifiedJs.code
+  // GLobal variables on window instead of var, let or const
   // .replace('let t=', 't=')
+  // .replace('let e,l,c', 'e,l,c')
   // Replace all double quotes with backticks for consistency
   .replaceAll('"', '`')
   // .replaceAll('19', '16+3') // Failed attempt to remove '9' to save bytes

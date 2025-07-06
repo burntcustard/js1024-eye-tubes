@@ -1,5 +1,4 @@
-let levelNumber = 0;
-let tubes = []; // Make tubes global so renderAllEyes can access it
+let tubes = [{},{}]; // Make tubes global so renderAllEyes can access it
 let floatingEye;
 let tubeBorderWidth = 3; // Also Chrome/Firefox button default border width
 let eyeSize = 32;
@@ -59,26 +58,22 @@ const renderAllEyes = () => {
 
 const startGame = () => {
   let eyeTypeIndex = Math.random() * eyeTypes.length | 0;
-  tubes.forEach(tube => {
-    tube.eyes.forEach(eye => {
+  gameStarted = false;
+
+  // eyeIndex is unused but having them helps with compression
+  tubes.forEach((tube, tubeIndex) => {
+    tube.eyes?.forEach((eye, eyeIndex) => {
       eye.remove(); // Remove all eyes from DOM
     });
-    tube.tubeElement.remove(); // Clear eyes array
+    tube.tubeElement?.remove();
+    // Create new eyes for this tube (including for previously empty tube)
+    tube.eyes = [
+      createEye((eyeTypeIndex + tubeIndex) % 5),
+      createEye((eyeTypeIndex + tubeIndex) % 5),
+      createEye((eyeTypeIndex + tubeIndex) % 5),
+      createEye((eyeTypeIndex + tubeIndex) % 5),
+    ];
   });
-  levelNumber++;
-  gameStarted = false;
-  tubes = [];
-
-  for (let i = levelNumber + 1; i--;) {
-    tubes.push({
-      eyes: [
-        createEye((eyeTypeIndex + i) % 5),
-        createEye((eyeTypeIndex + i) % 5),
-        createEye((eyeTypeIndex + i) % 5),
-        createEye((eyeTypeIndex + i) % 5),
-      ]
-    });
-  }
 
   // Add an empty tube
   tubes.push({
