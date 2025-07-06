@@ -4,7 +4,7 @@ let floatingEye;
 let tubeBorderWidth = 3;
 let eyeSize = 32;
 let testTubeGap = 16;
-let testTubeThickness = eyeSize + tubeBorderWidth * 2;
+let gameStarted;
 
 const eyeTypes = [
   // human
@@ -35,7 +35,7 @@ const eyeTypes = [
   [
     '#000',
     '#eee',
-    `scale(.2,.1) translate(0,-${testTubeThickness * 2}px)`
+    `scale(.2,.1) translate(0,-${(eyeSize + tubeBorderWidth * 2) * 2}px)`
   ],
 ];
 
@@ -57,13 +57,9 @@ const createEye = (eyeTypeIndex) => {
 
 const renderAllEyes = () => {
   tubes.forEach((tube, tubeIndex) => {
-    const totalWidth = tubes.length * testTubeThickness + (tubes.length - 1) * testTubeGap;
-    const startOffset = totalWidth / 2;
-    const tubeOffsetX = tubeIndex * (testTubeThickness + testTubeGap);
-    const xPos = startOffset - tubeOffsetX + eyeSize / 2;
-
     tube.eyes.forEach((eyeElement, eyePosition) => {
       const yPos = eyeSize - eyePosition * eyeSize;
+      const xPos = (tubes.length / 2 - tubeIndex - 0.5) * (eyeSize + tubeBorderWidth * 2 + testTubeGap) + eyeSize / 2;
       eyeElement.style.left = `calc(50% - ${xPos}px)`;
       eyeElement.style.top = `calc(50% + ${yPos}px)`;
     });
@@ -71,6 +67,7 @@ const renderAllEyes = () => {
 }
 
 const startGame = () => {
+  gameStarted = false;
   // let floatingEye = 0;
   tubes = []; // Reset the global tubes array
   // floatingEye = null; // Reset floating eye
@@ -110,24 +107,18 @@ const startGame = () => {
 
   // Add ALL tubes to DOM second (so they render on top of eyes)
   tubes.forEach((tube, tubeIndex) => {
-    // Calculate X position for this tube
-    const totalWidth = tubes.length * testTubeThickness + (tubes.length - 1) * testTubeGap;
-    const startOffset = totalWidth / 2;
-    const tubeOffsetX = tubeIndex * (testTubeThickness + testTubeGap);
-    const xPos = startOffset - tubeOffsetX;
-    const yPos = 0;
-
     // Create tube container for visual border
     const tubeElement = document.createElement('button');
     tubeElement.style.position = 'absolute';
-    tubeElement.style.left = `calc(50% - ${xPos + testTubeThickness/2}px)`;
-    tubeElement.style.top = `calc(50% + ${yPos - (4 * eyeSize + tubeBorderWidth * 2)/2}px)`;
+    const xPos = (tubes.length / 2 - tubeIndex - 0.5) * (eyeSize + tubeBorderWidth * 2 + testTubeGap) + (eyeSize + tubeBorderWidth * 2) / 2;
+    tubeElement.style.left = `calc(50% - ${xPos}px)`;
+    tubeElement.style.top = `calc(50% - ${(4 * eyeSize + tubeBorderWidth * 2)/2}px)`;
     tubeElement.style.border = `${tubeBorderWidth}px solid #fff`;
     tubeElement.style.borderTop = '0';
     tubeElement.style.borderRadius = `0 0 ${eyeSize}px ${eyeSize}px`;
     tubeElement.style.background = '#fff1';
     tubeElement.style.padding = '0';
-    tubeElement.style.width = `${testTubeThickness}px`;
+    tubeElement.style.width = `${eyeSize + tubeBorderWidth * 2}px`;
     tubeElement.style.height = `${4 * eyeSize + tubeBorderWidth * 2}px`;
 
     // Add click handler to move top eye
@@ -138,11 +129,8 @@ const startGame = () => {
           const originalTubeIndex = floatingEye.originalTubeIndex;
 
           // Position horizontally above the new tube first
-          const totalWidth = tubes.length * testTubeThickness + (tubes.length - 1) * testTubeGap;
-          const startOffset = totalWidth / 2;
-          const tubeOffsetX = tubeIndex * (testTubeThickness + testTubeGap);
-          const targetXPos = startOffset - tubeOffsetX;
-          floatingEye.style.left = `calc(50% - ${targetXPos + eyeSize/2}px)`;
+          const xPos = (tubes.length / 2 - tubeIndex - 0.5) * (eyeSize + tubeBorderWidth * 2 + testTubeGap) + eyeSize / 2;
+          floatingEye.style.left = `calc(50% - ${xPos}px)`;
           tube.eyes.push(floatingEye);
           floatingEye = 0; // Clear the floating eye
 
@@ -156,6 +144,19 @@ const startGame = () => {
         topEyeElement.originalTubeIndex = tubeIndex;
 
         floatingEye = topEyeElement;
+      }
+
+      if (gameStarted && tubes.every(tube => tube.eyes.every(eye => tube.eyes[3]?.style?.background === eye.style?.background))) {
+        setTimeout(() => {
+          levelNumber++;
+          tubes.forEach(tube => {
+            tube.eyes.forEach(eye => {
+              eye.remove(); // Remove all eyes from DOM
+            });
+            tube.tubeElement.remove(); // Clear eyes array
+          });
+          startGame();
+        }, 1000);
       }
     };
 
@@ -172,10 +173,7 @@ const startGame = () => {
     tubes[randomTubeIndex].tubeElement.click();
   }
 
-  // Final render to ensure all eyes are positioned correctly
-  renderAllEyes();
-
-  // console.log('floatingEye:', floatingEye);
+  gameStarted = true;
 }
 
 startGame();
