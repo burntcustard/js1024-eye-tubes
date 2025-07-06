@@ -100,7 +100,7 @@ const startGame = () => {
       if (floatingEye) {
         // There's a floating eye - place it in this tube if it has space
         if (tube.eyes.length < 4) {
-          const originalTubeIndex = floatingEye.originalTubeIndex;
+          // const originalTubeIndex = floatingEye.originalTubeIndex;
 
           // Position horizontally above the new tube first
           floatingEye.style.left = `calc(50% - ${(tubes.length / 2 - tubeIndex - 0.5) * (eyeSize + tubeBorderWidth * 2 + testTubeGap) + eyeSize / 2}px)`;
@@ -108,7 +108,11 @@ const startGame = () => {
           floatingEye = 0; // Clear the floating eye
 
           // Use setTimeout for the drop animation
-          setTimeout(renderAllEyes, originalTubeIndex == tubeIndex ? 0 : 200);
+          // Originally we checked for originalTubeIndex to not have a delay
+          // when putting an eye back into the previous tube, but it wasn't
+          // worth the ~30 B.
+          // setTimeout(renderAllEyes, originalTubeIndex === tubeIndex ? 0 : 200);
+          setTimeout(renderAllEyes, 100);
         }
       } else if (tube.eyes.length > 0) {
         floatingEye = tube.eyes.pop();
@@ -122,7 +126,8 @@ const startGame = () => {
         // tubeIndex and eye are unused but help with compression
         tubes.every((tube, tubeIndex) =>
           tube.eyes.every((eye, eyeIndex) =>
-            tube.eyes[3]?.style.background === tube.eyes[eyeIndex].style.background
+            // Put a ? after [3] to prevent console errors for 1 byte
+            tube.eyes[3].style.background === tube.eyes[eyeIndex].style.background
           )
         )
       ) {

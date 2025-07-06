@@ -14,9 +14,12 @@ const options = {
     booleans_as_integers: true,
   },
   mangle: {
-   properties: {
-    keep_quoted: true,
-   },
+    properties: {
+      keep_quoted: true,
+    },
+    // Don't mangle 'a' as it is used in the packed code.
+    // RegPack by default ignores a, b, c, d, and g
+    reserved: ['a'],
   },
   format: {
     wrap_func_args: false,
@@ -41,6 +44,9 @@ js = js
   )
   // createElement('div') -> createElement`div`
   .replace(/createElement\('([^']+)'\)/g, 'createElement`$1`')
+  // Shorten tubeIndex to a to avoid reassignment by terser.
+  // RegPack also doesn't reassign 'a','b','c' by default.
+  .replaceAll('tubeIndex', 'a')
   // // Replace slices global vars with single letter non-declared versions
   // .replaceAll(/(const\s)?board/g, 'm')
   // Replace const with let declartion
@@ -55,6 +61,7 @@ js = js
   // .replace('let t=', 't=')
   // Replace all double quotes with backticks for consistency
   .replaceAll('"', '`')
+  // .replaceAll('19', '16+3') // Failed attempt to remove '9' to save bytes
   // Remove final semicolon
   .replace(/;$/, '');
 
