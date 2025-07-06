@@ -1,7 +1,7 @@
 let levelNumber = 0;
 let tubes; // Make tubes global so renderAllEyes can access it
 let floatingEye;
-let tubeBorderWidth = 3;
+let tubeBorderWidth = 3; // Also Chrome/Firefox button default border width
 let eyeSize = 32;
 let testTubeGap = 16;
 let gameStarted;
@@ -10,19 +10,19 @@ const eyeTypes = [
   // human
   '#fee',
   'radial-gradient(#111 40%,#37f 0)',
-  'scale(.6,.6)translate(0,0)',
+  'scale(.6,.6)',
   // feline
   '#0e4',
   '#000',
-  'scale(.3,.7)translate(0,0)',
+  'scale(.3,.7)',
   // reptile
   '#fa0',
   '#000',
-  'scale(.1,.4)translate(0,0)',
+  'scale(.1,.4)',
   // owl
   '#fd0',
   '#000',
-  'scale(.4,.4)translate(0,0)',
+  'scale(.4,.4)',
   // spider
   '#000',
   '#eee',
@@ -57,7 +57,7 @@ const renderAllEyes = () => {
 }
 
 const startGame = () => {
-  let eyeTypeIndex = ~~(Math.random() * 5);
+  let eyeTypeIndex = Math.random() * eyeTypes.length | 0;
   levelNumber++;
   gameStarted = false;
   tubes = [];
@@ -89,7 +89,8 @@ const startGame = () => {
     const xPos = (tubes.length / 2 - tubeIndex - 0.5) * (eyeSize + tubeBorderWidth * 2 + testTubeGap) + (eyeSize + tubeBorderWidth * 2) / 2;
     tubeElement.style.left = `calc(50% - ${xPos}px)`;
     tubeElement.style.top = `calc(50% - ${yPos}px)`;
-    tubeElement.style.border = `#fff solid ${tubeBorderWidth}px`;
+    // Chrome/Firefox use 3px/medium by default for button border
+    tubeElement.style.border = `solid#fff`;
     tubeElement.style.borderTop = '0';
     tubeElement.style.borderRadius = `0 0 ${eyeSize}px ${eyeSize}px`;
     tubeElement.style.background = '#fff1';
@@ -142,7 +143,7 @@ const startGame = () => {
   // Shuffle by simulating tube clicks
   for (let shuffle = 0; shuffle < tubes.length * 100 || floatingEye; shuffle++) {
     // Click a random tube button
-    const randomTubeIndex = ~~(Math.random() * tubes.length);
+    const randomTubeIndex = Math.random() * tubes.length | 0;
     // console.log('clicking tube', tubes[randomTubeIndex]);
     tubes[randomTubeIndex].tubeElement.click();
   }

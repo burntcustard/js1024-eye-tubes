@@ -59,6 +59,7 @@ js = js
   .replace(/;$/, '');
 
 const packed = cmdRegPack(code, {
+  withMath: true,
   crushGainFactor: parseFloat(2),
   crushLengthFactor: parseFloat(1),
   crushCopiesFactor: parseFloat(1),
