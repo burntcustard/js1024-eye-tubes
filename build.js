@@ -66,7 +66,7 @@ js = js
   .replace(/;$/, '');
 
 const packed = cmdRegPack(code, {
-  withMath: true,
+  // withMath: true, // Sometimes worth wrapping with Math()
   crushGainFactor: parseFloat(2),
   crushLengthFactor: parseFloat(1),
   crushCopiesFactor: parseFloat(1),

@@ -1,5 +1,5 @@
 let levelNumber = 0;
-let tubes; // Make tubes global so renderAllEyes can access it
+let tubes = []; // Make tubes global so renderAllEyes can access it
 let floatingEye;
 let tubeBorderWidth = 3; // Also Chrome/Firefox button default border width
 let eyeSize = 32;
@@ -12,7 +12,7 @@ const eyeTypes = [
   'radial-gradient(#111 40%,#37f 0)',
   'scale(.6,.6)',
   // feline
-  '#0e4',
+  '#1e3',
   '#000',
   'scale(.3,.7)',
   // reptile
@@ -59,6 +59,12 @@ const renderAllEyes = () => {
 
 const startGame = () => {
   let eyeTypeIndex = Math.random() * eyeTypes.length | 0;
+  tubes.forEach(tube => {
+    tube.eyes.forEach(eye => {
+      eye.remove(); // Remove all eyes from DOM
+    });
+    tube.tubeElement.remove(); // Clear eyes array
+  });
   levelNumber++;
   gameStarted = false;
   tubes = [];
@@ -131,15 +137,7 @@ const startGame = () => {
           )
         )
       ) {
-        setTimeout(() => {
-          tubes.forEach(tube => {
-            tube.eyes.forEach(eye => {
-              eye.remove(); // Remove all eyes from DOM
-            });
-            tube.tubeElement.remove(); // Clear eyes array
-          });
-          startGame();
-        }, 1000);
+        setTimeout(startGame, 1000);
       }
     };
 
