@@ -121,7 +121,15 @@ const startGame = () => {
         floatingEye.originalTubeIndex = tubeIndex;
       }
 
-      if (gameStarted && tubes.every(tube => tube.eyes.every(eye => tube.eyes[3]?.style?.background === eye.style?.background))) {
+      if (
+        gameStarted &&
+        // tubeIndex is unused but helps with compression
+        tubes.every((tube, tubeIndex) =>
+          tube.eyes.every((_, eyeIndex) =>
+            tube.eyes[3]?.style.background === tube.eyes[eyeIndex].style.background
+          )
+        )
+      ) {
         setTimeout(() => {
           tubes.forEach(tube => {
             tube.eyes.forEach(eye => {
@@ -141,7 +149,8 @@ const startGame = () => {
   });
 
   // Shuffle by simulating tube clicks
-  for (let shuffle = 0; shuffle < tubes.length * 100 || floatingEye; shuffle++) {
+  // 67 Is a weird number but it compresses will with another 67
+  for (let shuffle = 0; shuffle < tubes.length * 67 || floatingEye; shuffle++) {
     // Click a random tube button
     const randomTubeIndex = Math.random() * tubes.length | 0;
     // console.log('clicking tube', tubes[randomTubeIndex]);
