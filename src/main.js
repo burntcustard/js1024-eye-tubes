@@ -18,7 +18,7 @@ const eyeTypes = [
   // reptile
   '#fa0',
   '#000',
-  'scale(0.1,.4)translate(0,0)',
+  'scale(.1,.4)translate(0,0)',
   // owl
   '#fd0',
   '#000',
