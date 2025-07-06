@@ -63,7 +63,7 @@ const startGame = () => {
   gameStarted = false;
   tubes = [];
 
-  for (let i = 0; i < levelNumber + 1; i++) {
+  for (let i = levelNumber + 1; i--;) {
     tubes.push({
       eyes: [
         createEye((eyeTypeIndex + i) % 5),
@@ -144,13 +144,9 @@ const startGame = () => {
     b.append(tubeElement);
   });
 
-  // Shuffle by simulating tube clicks
-  // 67 Is a weird number but it compresses will with another 67
-  for (let shuffle = 0; shuffle < tubes.length * 67 || floatingEye; shuffle++) {
-    // Click a random tube button
-    const randomTubeIndex = Math.random() * tubes.length | 0;
-    // console.log('clicking tube', tubes[randomTubeIndex]);
-    tubes[randomTubeIndex].tubeElement.click();
+  // Shuffle by clicking random tubes 200 times. Try 1e3 if not random enough?
+  for (let shuffle = 0; shuffle < 200 || floatingEye; shuffle++) {
+    tubes[Math.random() * tubes.length | 0].tubeElement.click();
   }
 
   gameStarted = true;
