@@ -1,4 +1,4 @@
-let levelNumber = 1;
+let levelNumber = 0;
 let tubes; // Make tubes global so renderAllEyes can access it
 let floatingEye;
 let tubeBorderWidth = 3;
@@ -14,7 +14,7 @@ const eyeTypes = [
   // feline
   '#0e4',
   '#000',
-  'scale(0.3,.7)translate(0,0)',
+  'scale(.3,.7)translate(0,0)',
   // reptile
   '#fa0',
   '#000',
@@ -58,6 +58,7 @@ const renderAllEyes = () => {
 
 const startGame = () => {
   let eyeTypeIndex = ~~(Math.random() * 5);
+  levelNumber++;
   gameStarted = false;
   tubes = [];
 
@@ -88,7 +89,7 @@ const startGame = () => {
     const xPos = (tubes.length / 2 - tubeIndex - 0.5) * (eyeSize + tubeBorderWidth * 2 + testTubeGap) + (eyeSize + tubeBorderWidth * 2) / 2;
     tubeElement.style.left = `calc(50% - ${xPos}px)`;
     tubeElement.style.top = `calc(50% - ${yPos}px)`;
-    tubeElement.style.border = `${tubeBorderWidth}px solid #fff`;
+    tubeElement.style.border = `#fff solid ${tubeBorderWidth}px`;
     tubeElement.style.borderTop = '0';
     tubeElement.style.borderRadius = `0 0 ${eyeSize}px ${eyeSize}px`;
     tubeElement.style.background = '#fff1';
@@ -121,7 +122,6 @@ const startGame = () => {
 
       if (gameStarted && tubes.every(tube => tube.eyes.every(eye => tube.eyes[3]?.style?.background === eye.style?.background))) {
         setTimeout(() => {
-          levelNumber++;
           tubes.forEach(tube => {
             tube.eyes.forEach(eye => {
               eye.remove(); // Remove all eyes from DOM
