@@ -95,7 +95,7 @@ const mangled = minifiedInlined
   .replace('"initial-scale=1"', 'initial-scale=1') // Remove initial-scale quotes
   .replace('</body></html>', ''); // Remove closing tags
 
-console.log(`Mangled: ${new Blob([mangled]).size}B`);
+console.log(`with HTML: ${new Blob([mangled]).size}B`);
 
 writeFileSync('index.nonpacked.html', minifiedInlinedNonPacked);
 writeFileSync('index.watch.html', minifiedInlined);
