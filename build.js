@@ -17,10 +17,10 @@ const options = {
     properties: {
       keep_quoted: true,
     },
-    // Don't mangle 'a' as it is used in the packed code.
-    // RegPack by default ignores a, b, c, d, and g
+    // Don't mangle some characters as they're used in the packed code.
     // This is needed to have duplicate CSS strings that pack well.
-    reserved: ['a'],
+    // And for .forEach(x,y) to have super consistent x,y names
+    reserved: ['a', 'b', 'c', 'd', 'e'],
   },
   format: {
     wrap_func_args: false,
@@ -47,7 +47,11 @@ js = js
   .replace(/createElement\('([^']+)'\)/g, 'createElement`$1`')
   // Shorten tubeIndex to a to avoid reassignment by terser.
   // RegPack also doesn't reassign 'a','b','c' by default.
-  .replaceAll('tubeIndex', 'a')
+  .replaceAll('tubeObject', 'a')
+  // 'b' is reserved for the document body
+  .replaceAll('tubeIndex', 'c')
+  .replaceAll('eyeElement', 'd')
+  .replaceAll('eyeIndex', 'e')
   // // Replace slices global vars with single letter non-declared versions
   // .replaceAll(/(const\s)?board/g, 'm')
   // Replace const with let declartion
@@ -70,6 +74,7 @@ js = js
 
 const packed = cmdRegPack(code, {
   // withMath: true, // Sometimes worth wrapping with Math()
+  varsNotReassigned : ['a', 'b', 'c', 'd', 'e'],
   crushGainFactor: parseFloat(7),
   crushLengthFactor: parseFloat(1),
   crushCopiesFactor: parseFloat(0),

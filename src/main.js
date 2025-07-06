@@ -47,12 +47,12 @@ const createEye = (eyeTypeIndex) => {
 }
 
 const renderAllEyes = () => {
-  tubes.forEach((tube, tubeIndex) => {
-    tube.eyes.forEach((eyeElement, eyePosition) => {
+  tubes.forEach((tubeObject, tubeIndex) => {
+    tubeObject.eyes.forEach((eyeElement, eyeIndex) => {
       eyeElement.style.left =
         `calc(50% - ${(tubes.length / 2 - tubeIndex - 0.5) * (eyeSize + tubeBorderWidth * 2 + testTubeGap) + eyeSize / 2}px)`;
       eyeElement.style.top =
-        `calc(50% + ${eyeSize - eyePosition * eyeSize}px)`;
+        `calc(50% + ${eyeSize - eyeIndex * eyeSize}px)`;
     });
   });
 }
@@ -62,13 +62,13 @@ const startGame = () => {
   gameStarted = false;
 
   // eyeIndex is unused but having them helps with compression
-  tubes.forEach((tube, tubeIndex) => {
-    tube.eyes?.forEach((eye, eyeIndex) => {
-      eye.remove(); // Remove all eyes from DOM
+  tubes.forEach((tubeObject, tubeIndex) => {
+    tubeObject.eyes?.forEach((eyeElement, eyeIndex) => {
+      eyeElement.remove(); // Remove all eyes from DOM
     });
-    tube.tubeElement?.remove();
+    tubeObject.tubeElement?.remove();
     // Create new eyes for this tube (including for previously empty tube)
-    tube.eyes = [
+    tubeObject.eyes = [
       createEye((eyeTypeIndex + tubeIndex) % 5),
       createEye((eyeTypeIndex + tubeIndex) % 5),
       createEye((eyeTypeIndex + tubeIndex) % 5),
@@ -82,7 +82,7 @@ const startGame = () => {
   });
 
   // Add ALL tubes to DOM second (so they render on top of eyes)
-  tubes.forEach((tube, tubeIndex) => {
+  tubes.forEach((tubeObject, tubeIndex) => {
     // Create tube container for visual border
     const tubeElement = document.createElement('button');
     tubeElement.style.left = `calc(50% - ${(tubes.length / 2 - tubeIndex - 0.5) * (eyeSize + tubeBorderWidth * 2 + testTubeGap) + (eyeSize + tubeBorderWidth * 2) / 2}px)`;
@@ -101,12 +101,12 @@ const startGame = () => {
     tubeElement.onclick = () => {
       if (floatingEye) {
         // There's a floating eye - place it in this tube if it has space
-        if (tube.eyes.length < 4) {
+        if (tubeObject.eyes.length < 4) {
           // const originalTubeIndex = floatingEye.originalTubeIndex;
 
           // Position horizontally above the new tube first
           floatingEye.style.left = `calc(50% - ${(tubes.length / 2 - tubeIndex - 0.5) * (eyeSize + tubeBorderWidth * 2 + testTubeGap) + eyeSize / 2}px)`;
-          tube.eyes.push(floatingEye);
+          tubeObject.eyes.push(floatingEye);
           floatingEye = 0; // Clear the floating eye
 
           // Use setTimeout for the drop animation
@@ -116,8 +116,8 @@ const startGame = () => {
           // setTimeout(renderAllEyes, originalTubeIndex === tubeIndex ? 0 : 200);
           setTimeout(renderAllEyes, 100);
         }
-      } else if (tube.eyes.length > 0) {
-        floatingEye = tube.eyes.pop();
+      } else if (tubeObject.eyes.length > 0) {
+        floatingEye = tubeObject.eyes.pop();
         floatingEye.style.top = `calc(50% - ${4 * eyeSize}px)`;
         floatingEye.originalTubeIndex = tubeIndex;
       }
@@ -128,8 +128,8 @@ const startGame = () => {
         // tubeIndex and eye are unused but help with compression
         tubes.every((tube, tubeIndex) =>
           tube.eyes.every((eye, eyeIndex) =>
-            // Put a ? after [3] to prevent console errors for 1 byte
-            tube.eyes[3].style.background === tube.eyes[eyeIndex].style.background
+            // Remove ? after [3] to save 1 byte but introduce console error
+            tube.eyes[3]?.style.background === tube.eyes[eyeIndex].style.background
           )
         )
       ) {
@@ -138,7 +138,7 @@ const startGame = () => {
     };
 
     // Store the tube element in the tube object
-    tube.tubeElement = tubeElement;
+    tubeObject.tubeElement = tubeElement;
     renderAllEyes();
     b.append(tubeElement);
   });
