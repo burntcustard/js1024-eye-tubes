@@ -146,7 +146,7 @@ const startGame = () => {
   });
 
   // Shuffle by clicking random tubes 200 times. Try 1e3 if not random enough?
-  for (let shuffle = 0; shuffle < 200 || floatingEye; shuffle++) {
+  for (let shuffle = 0; shuffle < 1000 || floatingEye; shuffle++) {
     tubes[Math.random() * tubes.length | 0].tubeElement.click();
   }
 
