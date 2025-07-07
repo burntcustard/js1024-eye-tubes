@@ -115,13 +115,13 @@ const startGame = () => {
           // Originally we checked for originalTubeIndex to not have a delay
           // when putting an eye back into the previous tube, but it wasn't
           // worth the ~30 B.
-          // setTimeout(renderAllEyes, originalTubeIndex === tubeIndex ? 0 : 200);
-          setTimeout(renderAllEyes, 100);
+          // setTimeout(renderAllEyes, floatingEye.originalTubeIndex === tubeIndex ? 0 : 200);
+          setTimeout(renderAllEyes, 150);
         }
       } else if (tubeObject.eyes.length > 0) {
         floatingEye = tubeObject.eyes.pop();
         floatingEye.style.top = `calc(50% - ${4 * eyeSize}px)`;
-        floatingEye.originalTubeIndex = tubeIndex;
+        // floatingEye.originalTubeIndex = tubeIndex;
       }
 
       if (
