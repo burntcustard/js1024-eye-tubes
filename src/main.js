@@ -1,15 +1,16 @@
 let tubes = [{},{}]; // Make tubes global so renderAllEyes can access it
 let floatingEye;
-let tubeBorderWidth = 3; // Also Chrome/Firefox button default border width
-let eyeSize = 32;
+let tubeBorderWidth = 2; // Also Chrome/Firefox button default border width
+let eyeSize = 28;
 let testTubeGap = 16;
+let testTubeSize = 32;
 let gameStarted;
 
 const eyeTypes = [
   // human
   '#fee',
   'radial-gradient(#111 40%,#37f 0)',
-  'scale(.6,.6)',
+  'scale(.6)',
   // feline
   '#1e3',
   '#000',
@@ -21,7 +22,7 @@ const eyeTypes = [
   // owl
   '#fe0',
   '#000',
-  'scale(.4,.4)',
+  'scale(.4)',
   // spider
   '#000',
   '#eee',
@@ -50,9 +51,9 @@ const renderAllEyes = () => {
   tubes.forEach((tubeObject, tubeIndex) => {
     tubeObject.eyes.forEach((eyeElement, eyeIndex) => {
       eyeElement.style.left =
-        `calc(50% - ${(tubes.length / 2 - tubeIndex - 0.5) * (eyeSize + tubeBorderWidth * 2 + testTubeGap) + eyeSize / 2}px)`;
+        `calc(50% - ${(tubes.length / 2 - tubeIndex - 0.5) * (testTubeSize + tubeBorderWidth * 2 + testTubeGap) + eyeSize / 2}px)`;
       eyeElement.style.top =
-        `calc(50% + ${eyeSize - eyeIndex * eyeSize}px)`;
+        `calc(50% + ${eyeSize - eyeIndex * (eyeSize + 1)}px)`;
     });
   });
 }
@@ -85,16 +86,16 @@ const startGame = () => {
   tubes.forEach((tubeObject, tubeIndex) => {
     // Create tube container for visual border
     const tubeElement = document.createElement('button');
-    tubeElement.style.left = `calc(50% - ${(tubes.length / 2 - tubeIndex - 0.5) * (eyeSize + tubeBorderWidth * 2 + testTubeGap) + (eyeSize + tubeBorderWidth * 2) / 2}px)`;
-    tubeElement.style.top = `calc(50% - ${2 * eyeSize + tubeBorderWidth}px)`;
+    tubeElement.style.left = `calc(50% - ${(tubes.length / 2 - tubeIndex - 0.5) * (testTubeSize + tubeBorderWidth * 2 + testTubeGap) + (testTubeSize + tubeBorderWidth * 2) / 2}px)`;
+    tubeElement.style.top = `calc(50% - ${testTubeSize * 2 + tubeBorderWidth + 2}px)`;
     // Chrome/Firefox use 3px/medium by default for button border
-    tubeElement.style.border = `solid#fff`;
+    tubeElement.style.border = `${tubeBorderWidth}px solid#fff`;
     tubeElement.style.borderTop = '0';
-    tubeElement.style.borderRadius = `0 0 ${eyeSize}px ${eyeSize}px`;
+    tubeElement.style.borderRadius = `0 0 ${testTubeSize}px ${testTubeSize}px`;
     tubeElement.style.background = '#fff1';
     tubeElement.style.padding = '0';
-    tubeElement.style.width = `${eyeSize + tubeBorderWidth * 2}px`;
-    tubeElement.style.height = `${4 * eyeSize + tubeBorderWidth * 2}px`;
+    tubeElement.style.width = `${testTubeSize + tubeBorderWidth * 2}px`;
+    tubeElement.style.height = `${4 * testTubeSize}px`;
     tubeElement.style.position = 'fixed';
 
     // Add click handler to move top eye
@@ -105,7 +106,7 @@ const startGame = () => {
           // const originalTubeIndex = floatingEye.originalTubeIndex;
 
           // Position horizontally above the new tube first
-          floatingEye.style.left = `calc(50% - ${(tubes.length / 2 - tubeIndex - 0.5) * (eyeSize + tubeBorderWidth * 2 + testTubeGap) + eyeSize / 2}px)`;
+          floatingEye.style.left = `calc(50% - ${(tubes.length / 2 - tubeIndex - 0.5) * (testTubeSize + tubeBorderWidth * 2 + testTubeGap) + eyeSize / 2}px)`;
           tubeObject.eyes.push(floatingEye);
           floatingEye = 0; // Clear the floating eye
 
