@@ -99,8 +99,7 @@ const startGame = () => {
     tubeElement.style.height = `${4 * (eyeSize + eyeGap) + tubeSize - eyeSize + tubeBorderWidth * 2}px`;
     tubeElement.style.position = 'fixed';
 
-    // Add click handler to move top eye
-    tubeElement.onclick = () => {
+    tubeObject.clickHandler = tubeElement.onclick = () => {
       if (floatingEye) {
         // There's a floating eye - place it in this tube if it has space
         if (tubeObject.eyes.length < 4) {
@@ -147,7 +146,7 @@ const startGame = () => {
 
   // Shuffle by clicking random tubes 200 times. Try 1e3 if not random enough?
   for (let shuffle = 0; shuffle < 1000 * tubes.length || floatingEye; shuffle++) {
-    tubes[Math.random() * tubes.length | 0].tubeElement.click();
+    tubes[Math.random() * tubes.length | 0].clickHandler();
   }
 
   gameStarted = true;
