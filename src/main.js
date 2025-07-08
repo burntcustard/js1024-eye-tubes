@@ -10,43 +10,28 @@ let gameStarted;
 
 const eyeTypes = [
   // human
-  '#fee',
-  'radial-gradient(#111 40%,#37f 0)',
-  'scale(.6)',
+  'radial-gradient(50% 50%, #000 35%, #37f 40% 60%, #fee 65%)',
   // feline
-  '#1e3',
-  '#000',
-  'scale(.3,.7)',
+  'radial-gradient(25% 65%, #000 50%, #1e3 60%',
   // reptile
-  '#fa0',
-  '#000',
-  'scale(.4,.1)',
+  'radial-gradient(32% 15%, #000 50%, #fa0 60%)',
   // owl
-  '#fe0',
-  '#000',
-  'scale(.4)',
+  'radial-gradient(50% 50%, #000 40%, #fe0 45%)',
   // spider
-  '#000',
-  '#eee',
-  // Translate is by a really weird number but it compresses well
-  `scale(.2,.1)translatey(-${(eyeSize + tubeBorderWidth * 2) * 2}px)`
+  'radial-gradient(22% 10% at 50% 24%, #eee 40%, #000 50%)',
 ];
 
 const createEye = (eyeTypeIndex) => {
-  const outerEye = document.createElement('div');
-  const innerEye = document.createElement('div');
+  const eye = document.createElement('div');
   // position absolute makes more sense but fixed is fewer characters
-  outerEye.style.position = 'fixed';
-  outerEye.style.width = innerEye.style.width = `${eyeSize}px`;
-  outerEye.style.height = innerEye.style.height = `${eyeSize}px`;
-  outerEye.style.borderRadius = innerEye.style.borderRadius = `${eyeSize}px`;
-  outerEye.style.transition = 'all.2s';
-  outerEye.style.background = eyeTypes[eyeTypeIndex * 3];
-  innerEye.style.background = eyeTypes[eyeTypeIndex * 3 + 1];
-  innerEye.style.transform = eyeTypes[eyeTypeIndex * 3 + 2];
-  outerEye.append(innerEye);
-  b.append(outerEye); // Immediately append eye to body
-  return outerEye;
+  eye.style.position = 'fixed';
+  eye.style.width = `${eyeSize}px`;
+  eye.style.height = `${eyeSize}px`;
+  eye.style.borderRadius = `${eyeSize}px`;
+  eye.style.transition = 'all.2s';
+  eye.style.background = eyeTypes[eyeTypeIndex];
+  b.append(eye); // Immediately append eye to body
+  return eye;
 }
 
 const renderAllEyes = () => {
