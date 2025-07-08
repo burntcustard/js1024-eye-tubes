@@ -36,7 +36,7 @@ js = js
     .replace(/`\s+/, '`')  // Remove newlines & spaces at start or string
     .replace(/\n\s+/g, '') // Remove newlines & spaces within values
     .replace(/:\s/g, ':')  // Remove spaces in between property & values
-    .replace(/\,\s/g, ',') // Remove space after commas
+    .replace(/,\s/g, ',') // Remove space after commas
     .replace(/(%) ([\d$])/g, '$1$2') // Remove space between '100% 50%' in hwb()
     .replace(/\s\/\s/g, '/') // Remove spaces around `/` in hsl
     .replace(/;\s+/g, ';') // Remove newlines & spaces after semicolons
@@ -52,10 +52,10 @@ js = js
   .replaceAll('tubeIndex', 'c')
   .replaceAll('eyeElement', 'd')
   .replaceAll('eyeIndex', 'e')
-  // // Replace slices global vars with single letter non-declared versions
-  // .replaceAll(/(const\s)?board/g, 'm')
   // Replace const with let declartion
   .replaceAll('const ', 'let ')
+  // Replace all .forEach with .map because they're the same but shorter in this codebase
+  .replaceAll('.forEach(', '.map(')
   // Replace all strict equality comparison with abstract equality comparison
   .replaceAll('===', '==')
   .replaceAll('!==', '!=')
@@ -63,7 +63,7 @@ js = js
   const minifiedJs = await minifyJs(js, options);
 
   const code = minifiedJs.code
-  // GLobal variables on window instead of var, let or const
+  // Global variables on window instead of var, let or const
   // .replace('let t=', 't=')
   // .replace('let e,l,c', 'e,l,c')
   // Replace all double quotes with backticks for consistency
@@ -75,9 +75,10 @@ js = js
 const packed = cmdRegPack(code, {
   // withMath: true, // Sometimes worth wrapping with Math()
   varsNotReassigned : ['a', 'b', 'c', 'd', 'e'],
-  crushGainFactor: parseFloat(7),
+  // RegPack crush options figured out with trial and error on siorki.github.io/regPack.html
+  crushGainFactor: parseFloat(2),
   crushLengthFactor: parseFloat(1),
-  crushCopiesFactor: parseFloat(0),
+  crushCopiesFactor: parseFloat(1),
 });
 
 const html = readFileSync('src/index.html', 'utf8');

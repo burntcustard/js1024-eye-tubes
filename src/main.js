@@ -5,6 +5,7 @@ const eyeSize = 28;
 const tubeSize = 32;
 const tubeGap = 16;
 let floatingEye;
+let floatingEyeOriginalTubeIndex;
 let gameStarted;
 
 const eyeTypes = [
@@ -52,9 +53,10 @@ const renderAllEyes = () => {
   tubes.forEach((tubeObject, tubeIndex) => {
     tubeObject.eyes.forEach((eyeElement, eyeIndex) => {
       eyeElement.style.left =
-        `calc(50% - ${(tubes.length / 2 - tubeIndex - 0.5) * (tubeSize + tubeBorderWidth * 2 + tubeGap) + eyeSize / 2}px)`;
+        `calc(50% - ${(tubes.length / 2 - tubeIndex - 0.5) * (tubeSize + tubeBorderWidth + tubeGap) + eyeSize / 2}px)`;
+      // calc(50% **+** made more sense but it was the only instance
       eyeElement.style.top =
-        `calc(50% + ${tubeBorderWidth + eyeSize + tubeSize - eyeSize - eyeIndex * (eyeSize + eyeGap)}px)`;
+        `calc(50% - ${-(tubeBorderWidth + eyeSize + tubeSize - eyeSize - eyeIndex * (eyeSize + eyeGap))}px)`;
     });
   });
 }
@@ -87,7 +89,7 @@ const startGame = () => {
   tubes.forEach((tubeObject, tubeIndex) => {
     // Create tube container for visual border
     const tubeElement = document.createElement('button');
-    tubeElement.style.left = `calc(50% - ${(tubes.length / 2 - tubeIndex - 0.5) * (tubeSize + tubeBorderWidth * 2 + tubeGap) + (tubeSize + tubeBorderWidth * 2) / 2}px)`;
+    tubeElement.style.left = `calc(50% - ${(tubes.length / 2 - tubeIndex - 0.5) * (tubeSize + tubeBorderWidth + tubeGap) + (tubeSize + tubeBorderWidth * 2) / 2}px)`;
     tubeElement.style.top = `calc(50% - ${(eyeSize + eyeGap) * 2}px)`;
     // Chrome/Firefox use 3px/medium by default for button border
     tubeElement.style.border = `${tubeBorderWidth}px solid#fff`;
@@ -106,7 +108,7 @@ const startGame = () => {
           // const originalTubeIndex = floatingEye.originalTubeIndex;
 
           // Position horizontally above the new tube first
-          floatingEye.style.left = `calc(50% - ${(tubes.length / 2 - tubeIndex - 0.5) * (tubeSize + tubeBorderWidth * 2 + tubeGap) + eyeSize / 2}px)`;
+          floatingEye.style.left = `calc(50% - ${(tubes.length / 2 - tubeIndex - 0.5) * (tubeSize + tubeBorderWidth + tubeGap) + eyeSize / 2}px)`;
           tubeObject.eyes.push(floatingEye);
           floatingEye = 0; // Clear the floating eye
 
@@ -114,13 +116,13 @@ const startGame = () => {
           // Originally we checked for originalTubeIndex to not have a delay
           // when putting an eye back into the previous tube, but it wasn't
           // worth the ~30 B.
-          // setTimeout(renderAllEyes, floatingEye.originalTubeIndex === tubeIndex ? 0 : 200);
-          setTimeout(renderAllEyes, 150);
+          setTimeout(renderAllEyes, floatingEyeOriginalTubeIndex === tubeIndex ? 0 : 150);
+          // setTimeout(renderAllEyes, 150);
         }
       } else if (tubeObject.eyes.length > 0) {
         floatingEye = tubeObject.eyes.pop();
-        floatingEye.style.top = `calc(50% - ${4 * eyeSize}px)`;
-        // floatingEye.originalTubeIndex = tubeIndex;
+        floatingEye.style.top = `calc(50% - ${4 * eyeSize + tubeBorderWidth * 2}px)`;
+        floatingEyeOriginalTubeIndex = tubeIndex;
       }
 
       if (
@@ -144,8 +146,9 @@ const startGame = () => {
     b.append(tubeElement);
   });
 
-  // Shuffle by clicking random tubes 200 times. Try 1e3 if not random enough?
-  for (let shuffle = 0; shuffle < 1000 * tubes.length || floatingEye; shuffle++) {
+  // Shuffle by clicking random tubes 1000+ times keeping going if there's a floating eye
+  // The ugly loop reverseness with no afterthought helps with compression
+  for (let shuffle = 1000 * tubes.length; --shuffle > 0 || floatingEye;) {
     tubes[Math.random() * tubes.length | 0].clickHandler();
   }
 
