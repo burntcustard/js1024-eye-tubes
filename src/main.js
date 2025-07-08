@@ -8,17 +8,20 @@ let floatingEye;
 let floatingEyeOriginalTubeIndex;
 let gameStarted;
 
+// Radial gradients are mostly:
+// optional(x-stretch y-stretch), center-color center-size, outer-color outer-size
+// ... but some might have 3 layers.
 const eyeTypes = [
   // human
-  'radial-gradient(50% 50%, #000 35%, #37f 40% 60%, #fee 65%)',
+  `radial-gradient(#000 25%, #37f 30% 45%, #fee 50%)`,
   // feline
-  'radial-gradient(25% 65%, #000 50%, #1e3 60%',
+  `radial-gradient(25% 65%, #000 50%, #1e3 60%`,
   // reptile
-  'radial-gradient(32% 15%, #000 50%, #fa0 60%)',
+  `radial-gradient(32% 15%, #000 50%, #fa0 60%)`,
   // owl
-  'radial-gradient(50% 50%, #000 40%, #fe0 45%)',
+  `radial-gradient(#000 25%, #fe0 30%)`,
   // spider
-  'radial-gradient(22% 10% at 50% 24%, #eee 40%, #000 50%)',
+  `radial-gradient(22% 10% at 50% 24%, #eee 40%, #000 50%)`,
 ];
 
 const createEye = (eyeTypeIndex) => {
