@@ -1,10 +1,10 @@
-let tubes = [{},{}]; // Make tubes global so renderAllEyes can access it
+const tubes = [{},{}]; // Make tubes global so renderAllEyes can access it
+const tubeBorderWidth = 2; // Also Chrome/Firefox button default border width
+const eyeGap = 1;
+const eyeSize = 28;
+const tubeSize = 32;
+const tubeGap = 16;
 let floatingEye;
-let tubeBorderWidth = 2; // Also Chrome/Firefox button default border width
-let eyeGap = 1;
-let eyeSize = 28;
-let tubeSize = 32;
-let tubeGap = 16;
 let gameStarted;
 
 const eyeTypes = [
@@ -60,7 +60,7 @@ const renderAllEyes = () => {
 }
 
 const startGame = () => {
-  let eyeTypeIndex = Math.random() * eyeTypes.length | 0;
+  const eyeTypeIndex = Math.random() * eyeTypes.length | 0;
   gameStarted = false;
 
   // eyeIndex is unused but having them helps with compression
