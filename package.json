@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "build": "node build.js",
-    "sync": "browser-sync -w --index index.watch.html",
+    "sync": "browser-sync --index index.watch.html -f index.watch.html",
     "watch-js": "chokidar src/**/* -c \"node build.js\"",
     "dev": "npm-run-all --parallel watch-js sync",
     "watch": "npm-run-all build dev"
