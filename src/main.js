@@ -1,9 +1,12 @@
-const tubes = [{},{}]; // Make tubes global so renderAllEyes can access it
+const tubes = []; // Make tubes global so renderAllEyes can access it
 const tubeBorderWidth = 2; // Also Chrome/Firefox button default border width
 const eyeGap = 1;
 const eyeSize = 28;
 const tubeSize = 32;
 const tubeGap = 16;
+const numOfEyeTypes = 5;
+let level = 2; // Start at level 2 i.e. 2 tubes with eyes
+let timeout;
 let floatingEye;
 let floatingEyeOriginalTubeIndex;
 let gameStarted;
@@ -49,24 +52,49 @@ const renderAllEyes = () => {
   });
 }
 
+const timerElement = document.createElement('div');
+timerElement.style.position = 'fixed';
+timerElement.style.width = '300px';
+timerElement.style.height = `${tubeBorderWidth}px`;
+timerElement.style.top = 'calc(50% - -100px)';
+timerElement.style.left = `calc(50% - 150px)`;
+timerElement.style.background = '#fff';
+timerElement.style.transition = 'all.2s';
+b.append(timerElement);
+
 const startGame = () => {
   const eyeTypeIndex = Math.random() * eyeTypes.length | 0;
-  gameStarted = false;
 
-  // eyeIndex is unused but having them helps with compression
+  gameStarted = false;
+  clearTimeout(timeout);
+  setTimeout(() => {
+    timerElement.style.transition = 'all.2s';
+    timerElement.style.width = '300px';
+    timerElement.style.left = `calc(50% - 150px)`;
+  });
+
+  // Remove all old tubes and eyes from DOM
   tubes.forEach((tubeObject, tubeIndex) => {
     tubeObject.eyes?.forEach((eyeElement, eyeIndex) => {
-      eyeElement.remove(); // Remove all eyes from DOM
+      eyeElement.remove();
     });
     tubeObject.tubeElement?.remove();
-    // Create new eyes for this tube (including for previously empty tube)
-    tubeObject.eyes = [
-      createEye((eyeTypeIndex + tubeIndex) % 5),
-      createEye((eyeTypeIndex + tubeIndex) % 5),
-      createEye((eyeTypeIndex + tubeIndex) % 5),
-      createEye((eyeTypeIndex + tubeIndex) % 5),
-    ];
   });
+
+  // Clear old tubes and eyes completely
+  tubes = [];
+
+  // Add new tubes with eyes
+  for (let tubeIndex = 0; level > tubeIndex++;) {
+    tubes.push({
+      eyes: [
+        createEye((eyeTypeIndex + tubeIndex) % numOfEyeTypes),
+        createEye((eyeTypeIndex + tubeIndex) % numOfEyeTypes),
+        createEye((eyeTypeIndex + tubeIndex) % numOfEyeTypes),
+        createEye((eyeTypeIndex + tubeIndex) % numOfEyeTypes),
+      ],
+    });
+  }
 
   // Add an empty tube
   tubes.push({
@@ -84,7 +112,6 @@ const startGame = () => {
     tubeElement.style.borderTop = '0';
     tubeElement.style.borderRadius = `0 0 ${tubeSize}px ${tubeSize}px`;
     tubeElement.style.background = '#fff1';
-    tubeElement.style.padding = '0';
     tubeElement.style.width = `${tubeSize + tubeBorderWidth * 2}px`;
     tubeElement.style.height = `${4 * (eyeSize + eyeGap) + tubeSize - eyeSize + tubeBorderWidth * 2}px`;
     tubeElement.style.position = 'fixed';
@@ -117,13 +144,15 @@ const startGame = () => {
         // bitwise AND `&` works here because we only care about truthiness
         gameStarted &
         // tubeIndex and eye are unused but help with compression
-        tubes.every((tube, tubeIndex) =>
-          tube.eyes.every((eye, eyeIndex) =>
+        tubes.every((tubeObject, tubeIndex) =>
+          tubeObject.eyes.every((eyeElement, eyeIndex) =>
             // Remove ? after [3] to save 1 byte but introduce console error
-            tube.eyes[3]?.style.background === tube.eyes[eyeIndex].style.background
+            tubeObject.eyes[3]?.style.background === tubeObject.eyes[eyeIndex].style.background
           )
         )
       ) {
+        level++;
+        clearTimeout(timeout);
         setTimeout(startGame, 1000);
       }
     };
@@ -136,9 +165,17 @@ const startGame = () => {
 
   // Shuffle by clicking random tubes 1000+ times keeping going if there's a floating eye
   // The ugly loop reverseness with no afterthought helps with compression
-  for (let shuffle = 1000 * tubes.length; --shuffle > 0 || floatingEye;) {
-    tubes[Math.random() * tubes.length | 0].clickHandler();
+  for (let shuffle = 0; floatingEye || 1000 * tubes.length > shuffle++;) {
+    tubes[Math.random() * tubes.length | 0].clickHandler(false);
   }
+
+  // 61s minute per level
+  timeout = setTimeout(startGame, 61000);
+  setTimeout(() => {
+    timerElement.style.transition = 'all 60s linear';
+    timerElement.style.width = 0;
+    timerElement.style.left = `calc(50%)`;
+  }, 1000);
 
   gameStarted = true;
 }
