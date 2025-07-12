@@ -4,7 +4,6 @@ const eyeGap = 1;
 const eyeSize = 28;
 const tubeSize = 32;
 const tubeGap = 16;
-const numOfEyeTypes = 5;
 let timeout;
 let timeRemaining = 0;
 let floatingEye;
@@ -107,10 +106,10 @@ const startGame = () => {
   // Fill each tube with eyes, except the 1st tube which is skip (its initially empty)
   tubes.forEach((tubeObject, tubeIndex) => {
     tubeObject.eyes = tubeIndex ? [
-      createEye((eyeTypeIndex + tubeIndex) % numOfEyeTypes),
-      createEye((eyeTypeIndex + tubeIndex) % numOfEyeTypes),
-      createEye((eyeTypeIndex + tubeIndex) % numOfEyeTypes),
-      createEye((eyeTypeIndex + tubeIndex) % numOfEyeTypes),
+      createEye((eyeTypeIndex + tubeIndex) % eyeTypes.length),
+      createEye((eyeTypeIndex + tubeIndex) % eyeTypes.length),
+      createEye((eyeTypeIndex + tubeIndex) % eyeTypes.length),
+      createEye((eyeTypeIndex + tubeIndex) % eyeTypes.length),
     ] : [];
   });
 
