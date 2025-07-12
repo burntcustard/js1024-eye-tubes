@@ -66,6 +66,8 @@ js = js
   // Global variables on window instead of var, let or const
   // .replace('let t=', 't=')
   // .replace('let e,l,c', 'e,l,c')
+  // Remove unnecessary parentheses around a little maps that doesn't need them
+  .replaceAll('{d.remove()}', 'd.remove()')
   // Replace all double quotes with backticks for consistency
   .replaceAll('"', '`')
   // .replaceAll('19', '16+3') // Failed attempt to remove '9' to save bytes

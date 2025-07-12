@@ -1,9 +1,12 @@
-const tubes = [{},{}]; // Make tubes global so renderAllEyes can access it
+const tubes = [{},{},{}]; // Make tubes global so renderAllEyes can access it
 const tubeBorderWidth = 2; // Also Chrome/Firefox button default border width
 const eyeGap = 1;
 const eyeSize = 28;
 const tubeSize = 32;
 const tubeGap = 16;
+const numOfEyeTypes = 5;
+let timeout;
+let timeRemaining = 0;
 let floatingEye;
 let floatingEyeOriginalTubeIndex;
 let gameStarted;
@@ -49,28 +52,64 @@ const renderAllEyes = () => {
   });
 }
 
+const timerElement = document.createElement('div');
+timerElement.style.position = 'fixed';
+timerElement.style.height = `${tubeBorderWidth}px`;
+timerElement.style.top = 'calc(50% - -100px)';
+timerElement.style.background = '#fff';
+timerElement.style.transition = 'all.2s';
+b.append(timerElement);
+
+const decrement = () => {
+  // Decrement the time remaining by 200ms
+  // If the time remaining is less than or equal to 0, stop the game
+  timeRemaining -= 100;
+
+
+  if (timeRemaining < 0) {
+    // Clear the timer from the previous level
+    // Moving this to happen on startGame() (every level start) saved 2B
+    // clearTimeout(timeout);
+    startGame();
+  } else {
+    // Schedule the next decrement
+    timerElement.style.width = `${timeRemaining / 300}px`;
+    timerElement.style.left = `calc(50% - ${timeRemaining / 600}px)`;
+    timeout = setTimeout(decrement, 100);
+  }
+}
+
 const startGame = () => {
+  // Which eye is the first eye to be added to the tubes
   const eyeTypeIndex = Math.random() * eyeTypes.length | 0;
+
+  // The game starts off as not started so perfect order when shuffling doesn't win
   gameStarted = false;
 
-  // eyeIndex is unused but having them helps with compression
+  // Clear the timer from the previous level
+  clearTimeout(timeout);
+
+  // Every time a level starts, add 30s to the timer (good if you have leftover time)
+  timeRemaining += 30000;
+
+  // Remove all old tubes and eyes from DOM
   tubes.forEach((tubeObject, tubeIndex) => {
-    tubeObject.eyes?.forEach((eyeElement, eyeIndex) => {
-      eyeElement.remove(); // Remove all eyes from DOM
+    // Usually its good to have both eyeElement and eyeIndex but it save 1B not having i here
+    tubeObject.eyes?.forEach((eyeElement) => {
+      // Optional chaining is not needed because eyeElement is always defined (we're looping
+      // through them!) but it saves 2B because .remove is always prefixed with '?'
+      eyeElement?.remove();
     });
     tubeObject.tubeElement?.remove();
-    // Create new eyes for this tube (including for previously empty tube)
-    tubeObject.eyes = [
-      createEye((eyeTypeIndex + tubeIndex) % 5),
-      createEye((eyeTypeIndex + tubeIndex) % 5),
-      createEye((eyeTypeIndex + tubeIndex) % 5),
-      createEye((eyeTypeIndex + tubeIndex) % 5),
-    ];
   });
 
-  // Add an empty tube
-  tubes.push({
-    eyes: []
+  tubes.forEach((tubeObject, tubeIndex) => {
+    tubeObject.eyes = (tubeIndex < tubes.length - 1) ? [
+      createEye((eyeTypeIndex + tubeIndex) % numOfEyeTypes),
+      createEye((eyeTypeIndex + tubeIndex) % numOfEyeTypes),
+      createEye((eyeTypeIndex + tubeIndex) % numOfEyeTypes),
+      createEye((eyeTypeIndex + tubeIndex) % numOfEyeTypes),
+    ] : [];
   });
 
   // Add ALL tubes to DOM second (so they render on top of eyes)
@@ -84,7 +123,6 @@ const startGame = () => {
     tubeElement.style.borderTop = '0';
     tubeElement.style.borderRadius = `0 0 ${tubeSize}px ${tubeSize}px`;
     tubeElement.style.background = '#fff1';
-    tubeElement.style.padding = '0';
     tubeElement.style.width = `${tubeSize + tubeBorderWidth * 2}px`;
     tubeElement.style.height = `${4 * (eyeSize + eyeGap) + tubeSize - eyeSize + tubeBorderWidth * 2}px`;
     tubeElement.style.position = 'fixed';
@@ -117,14 +155,18 @@ const startGame = () => {
         // bitwise AND `&` works here because we only care about truthiness
         gameStarted &
         // tubeIndex and eye are unused but help with compression
-        tubes.every((tube, tubeIndex) =>
-          tube.eyes.every((eye, eyeIndex) =>
+        tubes.every((tubeObject, tubeIndex) =>
+          tubeObject.eyes.every((eyeElement, eyeIndex) =>
             // Remove ? after [3] to save 1 byte but introduce console error
-            tube.eyes[3]?.style.background === tube.eyes[eyeIndex].style.background
+            tubeObject.eyes[3]?.style.background === tubeObject.eyes[eyeIndex].style.background
           )
         )
       ) {
-        setTimeout(startGame, 1000);
+        clearTimeout(timeout);
+        setTimeout(() => {
+          tubes.push({});
+          startGame();
+        }, 1000);
       }
     };
 
@@ -136,11 +178,14 @@ const startGame = () => {
 
   // Shuffle by clicking random tubes 1000+ times keeping going if there's a floating eye
   // The ugly loop reverseness with no afterthought helps with compression
-  for (let shuffle = 1000 * tubes.length; --shuffle > 0 || floatingEye;) {
+  for (let shuffle = 0; floatingEye || 1000 * tubes.length > shuffle++;) {
     tubes[Math.random() * tubes.length | 0].clickHandler();
   }
 
   gameStarted = true;
+
+  // Start ticking down the timer
+  decrement();
 }
 
 // Set body background to dark purply blue
