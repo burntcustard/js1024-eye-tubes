@@ -52,6 +52,10 @@ js = js
   .replaceAll('tubeIndex', 'c')
   .replaceAll('eyeElement', 'd')
   .replaceAll('eyeIndex', 'e')
+  // Replace timerELement with 'd' *as well* (doesn't help?)
+  // .replaceAll('timerElement', 'd')
+  // Replace tubeElement with 'd' *as well* (doesn't help?)
+  // .replaceAll('tubeElement', 'd')
   // Replace const with let declartion
   .replaceAll('const ', 'let ')
   // Replace all .forEach with .map because they're the same but shorter in this codebase
@@ -60,9 +64,9 @@ js = js
   .replaceAll('===', '==')
   .replaceAll('!==', '!=')
 
-  const minifiedJs = await minifyJs(js, options);
+const minifiedJs = await minifyJs(js, options);
 
-  const code = minifiedJs.code
+const code = minifiedJs.code
   // Global variables on window instead of var, let or const
   // .replace('let t=', 't=')
   // .replace('let e,l,c', 'e,l,c')

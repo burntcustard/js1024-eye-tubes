@@ -28,17 +28,17 @@ const eyeTypes = [
 ];
 
 const createEye = (eyeTypeIndex) => {
-  const eye = document.createElement('div');
+  const eyeElement = document.createElement('div');
   // position absolute makes more sense but fixed is fewer characters
-  eye.style.position = 'fixed';
-  eye.style.height = `${eyeSize}px`;
-  eye.style.width = `${eyeSize}px`;
-  eye.style.borderRadius = `${eyeSize}px`;
-  eye.style.transition = 'all.2s';
+  eyeElement.style.position = 'fixed';
+  eyeElement.style.height = `${eyeSize}px`;
+  eyeElement.style.width = `${eyeSize}px`;
+  eyeElement.style.borderRadius = `${eyeSize}px`;
+  eyeElement.style.transition = 'all.2s';
   // No closing bracket is needed at end of radial-gradient, saves 2B
-  eye.style.background = `radial-gradient(${eyeTypes[eyeTypeIndex]}`;
-  b.append(eye); // Immediately append eye to body
-  return eye;
+  eyeElement.style.background = `radial-gradient(${eyeTypes[eyeTypeIndex]}`;
+  b.append(eyeElement); // Immediately append eye to body
+  return eyeElement;
 }
 
 const renderAllEyes = () => {
