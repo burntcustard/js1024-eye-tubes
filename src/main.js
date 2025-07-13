@@ -70,6 +70,7 @@ const renderAllEyes = () => {
 const timerElement = document.createElement('div');
 timerElement.style.position = 'fixed';
 timerElement.style.height = `${tubeBorderWidth}px`;
+// - - for better compression
 timerElement.style.top = `calc(50% - -100px)`;
 timerElement.style.background = '#fff';
 timerElement.style.transition = 'all.2s';
