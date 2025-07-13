@@ -54,6 +54,9 @@ const createEye = (eyeTypeIndex) => {
 
 const renderAllEyes = () => {
   tubes.forEach((tubeObject, tubeIndex) => {
+    // Optional chaning ?. shouldn't be needed here because eyes are always
+    // defined, however it saves 4B because all .eyes are suffixed with `?`
+    // ... or maybe not. Removed to save 1B.
     tubeObject.eyes.forEach((eyeElement, eyeIndex) => {
       eyeElement.style.left =
         `calc(50% - ${(tubes.length / 2 - tubeIndex - 0.5) * (tubeSize + tubeBorderWidth + tubeGap) + eyeSize / 2}px)`;
@@ -103,26 +106,27 @@ const startGame = () => {
   // Every time a level starts, add 30s to the timer (good if you have leftover time)
   timeRemaining += 30000;
 
-  // Remove all old tubes and eyes from DOM
+  // Clear old DOM elements and create and add new eyes (so they render under tubes)
   tubes.forEach((tubeObject, tubeIndex) => {
+    // Remove the old eyes from the DOM if there were any
     // Usually its good to have both eyeElement and eyeIndex but it save 1B not having i here
     tubeObject.eyes?.forEach((eyeElement) => {
       // Optional chaining is not needed because eyeElement is always defined (we're looping
       // through them!) but it saves 2B because .remove is always prefixed with '?'
       eyeElement?.remove();
     });
-    tubeObject.tubeElement?.remove();
-  });
 
-  // Fill each tube with eyes, except the 1st tube which is skip (its initially empty)
-  tubes.forEach((tubeObject, tubeIndex) => {
+    // Remove the old tube element from DOM
+    tubeObject.tubeElement?.remove();
+
+    // Create and add the new eyes to tubes other than the 1st (its initially empty)
     tubeObject.eyes = tubeIndex ? [
       createEye(eyeTypeIndex + tubeIndex),
       createEye(eyeTypeIndex + tubeIndex),
       createEye(eyeTypeIndex + tubeIndex),
       createEye(eyeTypeIndex + tubeIndex),
     ] : [];
-  });
+  })
 
   // Add ALL tubes to DOM second (so they render on top of eyes)
   tubes.forEach((tubeObject, tubeIndex) => {
@@ -182,9 +186,10 @@ const startGame = () => {
       }
     };
 
-    renderAllEyes();
     b.append(tubeElement);
   });
+
+  renderAllEyes();
 
   // Shuffle by clicking random tubes 1000+ times keeping going if there's a floating eye
   // The ugly loop reverseness with no afterthought helps with compression
