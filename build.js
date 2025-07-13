@@ -42,6 +42,7 @@ js = js
     .replace(/;\s+/g, ';') // Remove newlines & spaces after semicolons
     .replace(/\)\s/g, ')') // Remove spaces after closing brackets
     .replace(/;`/, '`') // Remove final semicolons
+    .replace(/\)\`/g, '`') // Remove closing brackets usually at the end of calc
   )
   // createElement('div') -> createElement`div`
   .replace(/createElement\('([^']+)'\)/g, 'createElement`$1`')

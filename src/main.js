@@ -32,10 +32,10 @@ const createEye = (eyeTypeIndex) => {
   eyeElement.style.position = 'fixed';
   eyeElement.style.height = `${eyeSize}px`;
   eyeElement.style.width = `${eyeSize}px`;
-  eyeElement.style.borderRadius = `${eyeSize}px`;
+  eyeElement.style.borderRadius = `${eyeSize}px`; // 50% makes sense but compresses worse
   eyeElement.style.transition = 'all.2s';
   // No closing bracket is needed at end of radial-gradient, saves 2B
-  eyeElement.style.background = `radial-gradient(${eyeTypes[eyeTypeIndex]}`;
+  eyeElement.style.background = `radial-gradient(${eyeTypes[eyeTypeIndex]})`;
   b.append(eyeElement); // Immediately append eye to body
   return eyeElement;
 }
@@ -55,7 +55,7 @@ const renderAllEyes = () => {
 const timerElement = document.createElement('div');
 timerElement.style.position = 'fixed';
 timerElement.style.height = `${tubeBorderWidth}px`;
-timerElement.style.top = 'calc(50% - -100px)';
+timerElement.style.top = `calc(50% - -100px)`;
 timerElement.style.background = '#fff';
 timerElement.style.transition = 'all.2s';
 b.append(timerElement);
@@ -64,7 +64,6 @@ const decrement = () => {
   // Decrement the time remaining by 200ms
   // If the time remaining is less than or equal to 0, stop the game
   timeRemaining -= 100;
-
 
   if (timeRemaining < 0) {
     // Clear the timer from the previous level
@@ -116,12 +115,14 @@ const startGame = () => {
   // Add ALL tubes to DOM second (so they render on top of eyes)
   tubes.forEach((tubeObject, tubeIndex) => {
     // Create tube container for visual border
-    const tubeElement = document.createElement('button');
+    // and store the tube element in the tube object
+    const tubeElement = tubeObject.tubeElement = document.createElement('button');
     tubeElement.style.left = `calc(50% - ${(tubes.length / 2 - tubeIndex - 0.5) * (tubeSize + tubeBorderWidth + tubeGap) + (tubeSize + tubeBorderWidth * 2) / 2}px)`;
     tubeElement.style.top = `calc(50% - ${(eyeSize + eyeGap) * 2}px)`;
     // Chrome/Firefox use 3px/medium by default for button border
-    tubeElement.style.border = `${tubeBorderWidth}px solid#fff`;
-    tubeElement.style.borderTop = '0';
+    // Specific border value order with spaces chosen for best compression
+    tubeElement.style.border = `#fff solid ${tubeBorderWidth}px`;
+    tubeElement.style.borderTop = 0;
     tubeElement.style.borderRadius = `0 0 ${tubeSize}px ${tubeSize}px`;
     tubeElement.style.background = '#fff1';
     tubeElement.style.position = 'fixed';
@@ -169,8 +170,6 @@ const startGame = () => {
       }
     };
 
-    // Store the tube element in the tube object
-    tubeObject.tubeElement = tubeElement;
     renderAllEyes();
     b.append(tubeElement);
   });
