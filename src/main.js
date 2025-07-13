@@ -195,9 +195,10 @@ const startGame = () => {
 
   renderAllEyes();
 
-  // Shuffle by clicking random tubes 1000+ times keeping going if there's a floating eye
+  // Shuffle by clicking random tubes, a lot, keeping going if there's a floating eye
   // The ugly loop reverseness with no afterthought helps with compression
-  for (let shuffle = 1000 * tubes.length; floatingEye || shuffle--;) {
+  // Ideally would be 1000 * tubes.length but that costs a few bytes
+  for (let shuffle = 3000; floatingEye || shuffle--;) {
     tubes[Math.random() * tubes.length | 0].clickHandler();
   }
 
