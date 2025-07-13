@@ -84,7 +84,7 @@ b.append(timerElement);
 const decrement = () => {
   // Decrement the time remaining by 200ms
   // If the time remaining is less than or equal to 0, stop the game
-  timeRemaining -= 100;
+  timeRemaining--;
 
   if (timeRemaining < 0) {
     // Clear the timer from the previous level
@@ -93,8 +93,8 @@ const decrement = () => {
     startGame();
   } else {
     // Schedule the next decrement
-    timerElement.style.width = `${timeRemaining / 300}px`;
-    timerElement.style.left = `calc(50% - ${timeRemaining / 600}px)`;
+    timerElement.style.width = `${timeRemaining / 3}px`;
+    timerElement.style.left = `calc(50% - ${timeRemaining / 6}px)`;
     timeout = setTimeout(decrement, 100);
   }
 }
@@ -107,7 +107,8 @@ const startGame = () => {
   clearTimeout(timeout);
 
   // Every time a level starts, add 30s to the timer (good if you have leftover time)
-  timeRemaining += 30000;
+  // It's 30s because we * 100ms because the decrement is every 100ms
+  timeRemaining += 300;
 
   // Clear old DOM elements and create and add new eyes (so they render under tubes)
   tubes.forEach((tubeObject, tubeIndex) => {
