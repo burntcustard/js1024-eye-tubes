@@ -82,11 +82,11 @@ timerElement.style.transition = 'all.2s';
 b.append(timerElement);
 
 const decrement = () => {
-  // Decrement the time remaining by 200ms
-  // If the time remaining is less than or equal to 0, stop the game
-  timeRemaining--;
-
-  if (timeRemaining < 0) {
+  // Decrement the time remaining by 200ms(?)
+  // If the time remaining is less than 0, restart the game (the level)
+  // timeRemaining--;
+  // We do the decrement as part of the if condition to save 2B
+  if (timeRemaining-- < 0) {
     // Clear the timer from the previous level
     // Moving this to happen on startGame() (every level start) saved 2B
     // clearTimeout(timeout);
