@@ -14,29 +14,41 @@ let gameStarted;
 // optional(x-stretch y-stretch), center-color center-size, outer-color outer-size
 // ... but some might have 3 layers.
 const eyeTypes = [
-  // human
+  // Human
   `#000 25%, #37f 30% 45%, #fee 50%`,
-  // feline
+  // Feline (green)
   `25% 65%, #000 50%, #1e3 60%`,
-  // reptile
+  // Reptile (orange)
   `32% 15%, #000 50%, #fa0 60%`,
-  // owl
+  // Owl (yellow)
   `#000 25%, #fe0 30%`,
-  // spider
+  // Spider (black)
   `22% 10% at 50% 24%, #eee 40%, #000 50%`,
 ];
 
 const createEye = (eyeTypeIndex) => {
   const eyeElement = document.createElement('div');
-  // position absolute makes more sense but fixed is fewer characters
+  // position: absolute makes more sense but fixed is fewer characters
   eyeElement.style.position = 'fixed';
+
+  // could be height = width = exSize but that compresses worse
   eyeElement.style.height = `${eyeSize}px`;
   eyeElement.style.width = `${eyeSize}px`;
-  eyeElement.style.borderRadius = `${eyeSize}px`; // 50% makes sense but compresses worse
+
+  // 50% makes sense but compresses worse
+  eyeElement.style.borderRadius = `${eyeSize}px`;
+
+  // Animation timing for eye moving up/across/down (although .05s skipped via setTimeout)
   eyeElement.style.transition = 'all.2s';
-  // No closing bracket is needed at end of radial-gradient, saves 2B
-  eyeElement.style.background = `radial-gradient(${eyeTypes[eyeTypeIndex]})`;
-  b.append(eyeElement); // Immediately append eye to body
+
+  // No closing bracket is needed at end of radial-gradient, it's removed in build.js saves 2B
+  // Having the wrapping of the eyeTypeIndex back to 0 in createEye() saves 2B
+  eyeElement.style.background = `radial-gradient(${eyeTypes[eyeTypeIndex % eyeTypes.length]})`;
+
+  // Immediately append eye to document body
+  b.append(eyeElement);
+
+  // Return the eye element which then gets added to the tube
   return eyeElement;
 }
 
@@ -105,10 +117,10 @@ const startGame = () => {
   // Fill each tube with eyes, except the 1st tube which is skip (its initially empty)
   tubes.forEach((tubeObject, tubeIndex) => {
     tubeObject.eyes = tubeIndex ? [
-      createEye((eyeTypeIndex + tubeIndex) % eyeTypes.length),
-      createEye((eyeTypeIndex + tubeIndex) % eyeTypes.length),
-      createEye((eyeTypeIndex + tubeIndex) % eyeTypes.length),
-      createEye((eyeTypeIndex + tubeIndex) % eyeTypes.length),
+      createEye(eyeTypeIndex + tubeIndex),
+      createEye(eyeTypeIndex + tubeIndex),
+      createEye(eyeTypeIndex + tubeIndex),
+      createEye(eyeTypeIndex + tubeIndex),
     ] : [];
   });
 
