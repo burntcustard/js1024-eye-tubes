@@ -32,7 +32,7 @@ const eyeTypeIndex = Math.random() * eyeTypes.length | 0;
 // const eyeTypeIndex = 0;
 
 const createEye = (eyeTypeIndex) => {
-  const eyeElement = document.createElement('div');
+  const eyeElement = document.createElement('b');
   // position: absolute makes more sense but fixed is fewer characters
   eyeElement.style.position = 'fixed';
 
@@ -72,7 +72,7 @@ const renderAllEyes = () => {
   });
 }
 
-const timerElement = document.createElement('div');
+const timerElement = document.createElement('b');
 timerElement.style.position = 'fixed';
 timerElement.style.height = `${tubeBorderWidth}px`;
 // - - for better compression

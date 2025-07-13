@@ -75,8 +75,14 @@ const code = minifiedJs.code
   // Remove unnecessary parentheses around a little maps that doesn't need them
   // .replaceAll('{d.remove()}', 'd.remove()')
   // .replaceAll('t=>{t?.remove()}', 't=>t?.remove()')
+
   // Replace all double quotes with backticks for consistency
   .replaceAll('"', '`')
+
+  // Attempt at replacing sizes with sizes that take fewer characters
+  // .replaceAll('116px', '3cm')
+  // .replaceAll('100px', '1in')
+
   // .replaceAll('19', '16+3') // Failed attempt to remove '9' to save bytes
   // Remove final semicolon
   .replace(/;$/, '');
