@@ -51,8 +51,9 @@ js = js
   .replaceAll('tubeObject', 'a')
   // 'b' is reserved for the document body
   .replaceAll('tubeIndex', 'c')
-  .replaceAll('eyeElement', 'd')
-  .replaceAll('eyeIndex', 'e')
+  // Resting disabling renaming eye variables for now
+  // .replaceAll('eyeElement', 'd')
+  // .replaceAll('eyeIndex', 'e')
   // Replace timerELement with 'd' *as well* (doesn't help?)
   // .replaceAll('timerElement', 'd')
   // Replace tubeElement with 'd' *as well* (doesn't help?)
@@ -72,7 +73,8 @@ const code = minifiedJs.code
   // .replace('let t=', 't=')
   // .replace('let e,l,c', 'e,l,c')
   // Remove unnecessary parentheses around a little maps that doesn't need them
-  .replaceAll('{d.remove()}', 'd.remove()')
+  // .replaceAll('{d.remove()}', 'd.remove()')
+  // .replaceAll('t=>{t?.remove()}', 't=>t?.remove()')
   // Replace all double quotes with backticks for consistency
   .replaceAll('"', '`')
   // .replaceAll('19', '16+3') // Failed attempt to remove '9' to save bytes
@@ -81,7 +83,13 @@ const code = minifiedJs.code
 
 const packed = cmdRegPack(code, {
   // withMath: true, // Sometimes worth wrapping with Math()
-  varsNotReassigned : ['a', 'b', 'c', 'd', 'e'],
+  varsNotReassigned : [
+    'a',
+    'b',
+    'c',
+    // 'd',
+    // 'e',
+  ],
   // RegPack crush options figured out with trial and error on siorki.github.io/regPack.html
   crushGainFactor: parseFloat(2),
   crushLengthFactor: parseFloat(1),

@@ -26,6 +26,11 @@ const eyeTypes = [
   `22% 10% at 50% 24%, #eee 40%, #000 50%`,
 ];
 
+// Which eye is the first eye to be added to the tubes
+const eyeTypeIndex = Math.random() * eyeTypes.length | 0;
+// We could non-randomise the eye you start with to save 8B:
+// const eyeTypeIndex = 0;
+
 const createEye = (eyeTypeIndex) => {
   const eyeElement = document.createElement('div');
   // position: absolute makes more sense but fixed is fewer characters
@@ -62,7 +67,7 @@ const renderAllEyes = () => {
         `calc(50% - ${(tubes.length / 2 - tubeIndex - 0.5) * (tubeSize + tubeBorderWidth + tubeGap) + eyeSize / 2}px)`;
       // calc(50% **+** made more sense but it was the only instance
       eyeElement.style.top =
-        `calc(50% - ${-(tubeBorderWidth + eyeSize + tubeSize - eyeSize - eyeIndex * (eyeSize + eyeGap))}px)`;
+        `calc(50% - ${(eyeSize + eyeGap) * eyeIndex - (tubeBorderWidth + eyeSize + tubeSize - eyeSize)}px)`;
     });
   });
 }
@@ -95,9 +100,6 @@ const decrement = () => {
 }
 
 const startGame = () => {
-  // Which eye is the first eye to be added to the tubes
-  const eyeTypeIndex = Math.random() * eyeTypes.length | 0;
-
   // The game starts off as not started so perfect order when shuffling doesn't win
   gameStarted = false;
 
@@ -113,7 +115,7 @@ const startGame = () => {
     // Usually its good to have both eyeElement and eyeIndex but it save 1B not having i here
     tubeObject.eyes?.forEach((eyeElement) => {
       // Optional chaining is not needed because eyeElement is always defined (we're looping
-      // through them!) but it saves 2B because .remove is always prefixed with '?'
+      // through them!) but it saves ~2B because .remove is always prefixed with '?'
       eyeElement?.remove();
     });
 
