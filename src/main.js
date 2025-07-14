@@ -5,30 +5,19 @@ const eyeSize = 28;
 const eyesPerTube = 4;
 const tubeSize = 32;
 const tubeGap = 16;
+
+// Hardcoded total number of eye types in the array in createEye().
+// Having eyeTypes inlined there, with this hardcoded number, saves 3B
+const numberOfEyeTypes = 5;
+
 let timeout;
 let timeRemaining = 0;
 let floatingEye;
 let floatingEyeOriginalTubeIndex;
 let gameStarted;
 
-// Radial gradients are mostly:
-// optional(x-stretch y-stretch), center-color center-size, outer-color outer-size
-// ... but some might have 3 layers.
-const eyeTypes = [
-  // Feline (green)
-  `25% 65%, #000 50%, #1e3 60%`,
-  // Owl (yellow)
-  `#000 25%, #fe0 30%`,
-  // Reptile (orange)
-  `32% 15%, #000 50%, #fa0 60%`,
-  // Human
-  `#000 25%, #37f 30% 45%, #fee 50%`,
-  // Spider (black)
-  `22% 10% at 50% 24%, #eee 40%, #000 50%`,
-];
-
 // Which eye is the first eye to be added to the tubes
-const eyeTypeIndex = eyeTypes.length * Math.random() | 0;
+const eyeTypeIndex = numberOfEyeTypes * Math.random() | 0;
 // We could non-randomise the eye you start with to save 8B:
 // const eyeTypeIndex = 0;
 
@@ -51,7 +40,16 @@ const createEye = (eyeTypeIndex) => {
 
   // No closing bracket is needed at end of radial-gradient, it's removed in build.js saves 2B
   // Having the wrapping of the eyeTypeIndex back to 0 in createEye() saves 2B
-  eyeElement.style.background = `radial-gradient(${eyeTypes[eyeTypeIndex % eyeTypes.length]})`;
+  // Radial gradients are mostly:
+  // optional(x-stretch y-stretch), center-color center-size, outer-color outer-size
+  // ... but some might have 3 layers.
+  eyeElement.style.background = `radial-gradient(${[
+    /* Feline (green)   */ `25% 65%, #000 50%, #1e3 60%`,
+    /* Owl (yellow)     */ `#000 25%, #fe0 30%`,
+    /* Reptile (orange) */ `32% 15%, #000 50%, #fa0 60%`,
+    /* Human            */ `#000 25%, #37f 30% 45%, #fee 50%`,
+    /* Spider (black)   */ `22% 10% at 50% 24%, #eee 40%, #000 50%`,
+  ][eyeTypeIndex % numberOfEyeTypes]})`;
 
   // Immediately append eye to document body
   b.append(eyeElement);
