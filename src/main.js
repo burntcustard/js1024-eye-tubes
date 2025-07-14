@@ -2,6 +2,7 @@ const tubes = [{},{},{}]; // Make tubes global so renderAllEyes can access it
 const tubeBorderWidth = 2;
 const eyeGap = 1;
 const eyeSize = 28;
+const eyesPerTube = 4;
 const tubeSize = 32;
 const tubeGap = 16;
 let timeout;
@@ -78,23 +79,26 @@ const timerElement = document.createElement('b');
 timerElement.style.position = 'fixed';
 timerElement.style.height = `${tubeBorderWidth}px`;
 
-// - - for better compression
+// double negative in calc for better compression compared to 50% + ...
 timerElement.style.top = `calc(50% - -100px)`;
 timerElement.style.background = '#fff';
-timerElement.style.transition = 'all.2s';
+
+// Removed (already broken?) transition to save 4B
+// timerElement.style.transition = 'all.2s';
+
 b.append(timerElement);
 
 const decrement = () => {
+  timerElement.style.width = `${timeRemaining / 3}px`;
+  timerElement.style.left = `calc(50% - ${timeRemaining / 6}px)`;
+
   // If the timeRemaining, after decrementing it, is truthy (> 0)
   if (timeRemaining--) {
     // Schedule the next decrement
-    timerElement.style.width = `${timeRemaining / 3}px`;
-    timerElement.style.left = `calc(50% - ${timeRemaining / 6}px)`;
     timeout = setTimeout(decrement, 100);
   // If the time remaining is falsey (exactly 0), restart the game (the level)
   } else {
-    // Clear the timer from the previous level
-    // Moving this to happen on startGame() (every level start) saved 2B
+    // Moving clearTimeout() to happen on startGame() (every level start) saved 2B
     // clearTimeout(timeout);
     startGame();
   }
@@ -147,13 +151,13 @@ const startGame = () => {
     tubeElement.style.borderRadius = `0 0 ${tubeSize}px ${tubeSize}px`;
     tubeElement.style.background = '#fff1';
     tubeElement.style.position = 'fixed';
-    tubeElement.style.height = `${4 * (eyeSize + eyeGap) + tubeSize - eyeSize + tubeBorderWidth * 2}px`;
+    tubeElement.style.height = `${eyesPerTube * (eyeSize + eyeGap) + tubeSize - eyeSize + tubeBorderWidth * 2}px`;
     tubeElement.style.width = `${tubeSize + tubeBorderWidth * 2}px`;
 
     tubeObject.clickHandler = tubeElement.onclick = () => {
       if (floatingEye) {
         // There's a floating eye - place it in this tube if it has space
-        if (tubeObject.eyes.length < 4) {
+        if (tubeObject.eyes.length < eyesPerTube) {
           // const originalTubeIndex = floatingEye.originalTubeIndex;
 
           // Position horizontally above the new tube first
@@ -168,9 +172,16 @@ const startGame = () => {
           setTimeout(renderAllEyes, floatingEyeOriginalTubeIndex === tubeIndex ? 0 : 150);
           // setTimeout(renderAllEyes, 150);
         }
-      } else if (tubeObject.eyes.length > 0) {
+
+      // If there's >0 eyes in the tube
+      } else if (tubeObject.eyes.length) {
+        // Remove the eye at the top of the tube and assign it as the floating eye
         floatingEye = tubeObject.eyes.pop();
-        floatingEye.style.top = `calc(50% - ${4 * eyeSize + tubeBorderWidth * 2}px)`;
+
+        // Move the newly floating eye upwards
+        floatingEye.style.top = `calc(50% - ${eyesPerTube * eyeSize + tubeBorderWidth * 2}px)`;
+
+        // Set the tube index that the eye came from for faster transition if placing it back in
         floatingEyeOriginalTubeIndex = tubeIndex;
       }
 
