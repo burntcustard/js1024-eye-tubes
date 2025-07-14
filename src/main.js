@@ -59,21 +59,6 @@ const createEye = (eyeTypeIndex) => {
   return eyeElement;
 }
 
-const renderAllEyes = () => {
-  tubes.forEach((tubeObject, tubeIndex) => {
-    // Optional chaning ?. shouldn't be needed here because eyes are always
-    // defined, however it saves 4B because all .eyes are suffixed with `?`
-    // ... or maybe not. Removed to save 1B.
-    tubeObject.eyes.forEach((eyeElement, eyeIndex) => {
-      eyeElement.style.left =
-        `calc(50% - ${(tubes.length / 2 - tubeIndex - 0.5) * (tubeSize + tubeBorderWidth + tubeGap) + eyeSize / 2}px)`;
-      // calc(50% **+** made more sense but it was the only instance
-      eyeElement.style.top =
-        `calc(50% - ${(eyeSize + eyeGap) * eyeIndex - (tubeBorderWidth + eyeSize + tubeSize - eyeSize)}px)`;
-    });
-  });
-}
-
 const timerElement = document.createElement('b');
 timerElement.style.position = 'fixed';
 timerElement.style.height = `${tubeBorderWidth}px`;
@@ -172,8 +157,18 @@ const startGame = () => {
           floatingEye = 0; // Clear the floating eye
 
           // Use setTimeout for the drop animation
-          setTimeout(renderAllEyes, floatingEyeOriginalTubeIndex === tubeIndex ? 0 : 150);
-          // setTimeout(renderAllEyes, 150);
+          setTimeout(() => tubes.forEach((tubeObject, tubeIndex) => {
+            // Optional chaning ?. shouldn't be needed here because eyes are always
+            // defined, however it saves 4B because all .eyes are suffixed with `?`
+            // ... or maybe not. Removed to save 1B.
+            tubeObject.eyes.forEach((eyeElement, eyeIndex) => {
+              eyeElement.style.left =
+                `calc(50% - ${(tubes.length / 2 - tubeIndex - 0.5) * (tubeSize + tubeBorderWidth + tubeGap) + eyeSize / 2}px)`;
+              // calc(50% **+** made more sense but it was the only instance
+              eyeElement.style.top =
+                `calc(50% - ${(eyeSize + eyeGap) * eyeIndex - (tubeBorderWidth + eyeSize + tubeSize - eyeSize)}px)`;
+              });
+          }), floatingEyeOriginalTubeIndex === tubeIndex ? 0 : 150);
         }
 
       // If there's >0 eyes in the tube
@@ -208,7 +203,7 @@ const startGame = () => {
     b.append(tubeElement);
   });
 
-  renderAllEyes();
+  // renderAllEyes();
 
   // Shuffle by clicking random tubes, a lot, keeping going if there's a floating eye
   // The ugly loop reverseness with no afterthought helps with compression
