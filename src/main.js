@@ -32,11 +32,13 @@ const eyeTypeIndex = Math.random() * eyeTypes.length | 0;
 // const eyeTypeIndex = 0;
 
 const createEye = (eyeTypeIndex) => {
+  // Create new eye using <b> because it's only 1 char & starts the same as <button>
   const eyeElement = document.createElement('b');
+
   // position: absolute makes more sense but fixed is fewer characters
   eyeElement.style.position = 'fixed';
 
-  // could be height = width = exSize but that compresses worse
+  // Could be height = width = exSize but that compresses worse
   eyeElement.style.height = `${eyeSize}px`;
   eyeElement.style.width = `${eyeSize}px`;
 
@@ -75,6 +77,7 @@ const renderAllEyes = () => {
 const timerElement = document.createElement('b');
 timerElement.style.position = 'fixed';
 timerElement.style.height = `${tubeBorderWidth}px`;
+
 // - - for better compression
 timerElement.style.top = `calc(50% - -100px)`;
 timerElement.style.background = '#fff';
@@ -82,20 +85,18 @@ timerElement.style.transition = 'all.2s';
 b.append(timerElement);
 
 const decrement = () => {
-  // Decrement the time remaining by 200ms(?)
-  // If the time remaining is less than 0, restart the game (the level)
-  // timeRemaining--;
-  // We do the decrement as part of the if condition to save 2B
-  if (timeRemaining-- < 0) {
-    // Clear the timer from the previous level
-    // Moving this to happen on startGame() (every level start) saved 2B
-    // clearTimeout(timeout);
-    startGame();
-  } else {
+  // If the timeRemaining, after decrementing it, is truthy (> 0)
+  if (timeRemaining--) {
     // Schedule the next decrement
     timerElement.style.width = `${timeRemaining / 3}px`;
     timerElement.style.left = `calc(50% - ${timeRemaining / 6}px)`;
     timeout = setTimeout(decrement, 100);
+  // If the time remaining is falsey (exactly 0), restart the game (the level)
+  } else {
+    // Clear the timer from the previous level
+    // Moving this to happen on startGame() (every level start) saved 2B
+    // clearTimeout(timeout);
+    startGame();
   }
 }
 
