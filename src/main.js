@@ -108,6 +108,13 @@ const startGame = () => {
   // The game starts off as not started so perfect order when shuffling doesn't win
   gameStarted = false;
 
+  // This fixes bugs where a floating eye from the previous level explodes things,
+  // ... But it takes up 10B!
+  if (floatingEye) {
+    floatingEye.remove();
+    floatingEye = 0;
+  }
+
   // Clear the timer from the previous level
   clearTimeout(timeout);
 
@@ -166,9 +173,6 @@ const startGame = () => {
           floatingEye = 0; // Clear the floating eye
 
           // Use setTimeout for the drop animation
-          // Originally we checked for originalTubeIndex to not have a delay
-          // when putting an eye back into the previous tube, but it wasn't
-          // worth the ~30 B.
           setTimeout(renderAllEyes, floatingEyeOriginalTubeIndex === tubeIndex ? 0 : 150);
           // setTimeout(renderAllEyes, 150);
         }
