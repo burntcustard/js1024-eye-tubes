@@ -71,16 +71,21 @@ const minifiedJs = await minifyJs(js, options);
 const code = minifiedJs.code
   // Global variables on window instead of var, let or const
   // .replace('let t=', 't=')
-  // .replace('let e,l,c', 'e,l,c')
-  // Remove unnecessary parentheses around a little maps that doesn't need them
+  // .replace('let t,', 't,')
+
+  // Remove unnecessary parentheses around a little maps that doesn't need them.
+  // Actually adds ~1B
   // .replaceAll('{d.remove()}', 'd.remove()')
   // .replaceAll('t=>{t?.remove()}', 't=>t?.remove()')
 
-  // Replace =()=> with =v=>
+  // Replace '=()=>' with '=v=>'. Actually increases size by 2B
   // .replaceAll('=()=>', '=v=>')
 
   // Replace all double quotes with backticks for consistency
   .replaceAll('"', '`')
+
+  // Replace -100px in calc with something that compresses better. Actually adds 3B
+  // .replaceAll('- -100px', '- ${-100}px')
 
   // Attempt at replacing sizes with sizes that take fewer characters
   // .replaceAll('116px', '3cm')

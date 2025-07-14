@@ -15,14 +15,14 @@ let gameStarted;
 // optional(x-stretch y-stretch), center-color center-size, outer-color outer-size
 // ... but some might have 3 layers.
 const eyeTypes = [
-  // Human
-  `#000 25%, #37f 30% 45%, #fee 50%`,
   // Feline (green)
   `25% 65%, #000 50%, #1e3 60%`,
-  // Reptile (orange)
-  `32% 15%, #000 50%, #fa0 60%`,
   // Owl (yellow)
   `#000 25%, #fe0 30%`,
+  // Reptile (orange)
+  `32% 15%, #000 50%, #fa0 60%`,
+  // Human
+  `#000 25%, #37f 30% 45%, #fee 50%`,
   // Spider (black)
   `22% 10% at 50% 24%, #eee 40%, #000 50%`,
 ];
