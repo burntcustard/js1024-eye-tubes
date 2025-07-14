@@ -36,7 +36,7 @@ const createEye = (eyeTypeIndex) => {
   eyeElement.style.borderRadius = `${eyeSize}px`;
 
   // Animation timing for eye moving up/across/down (although .05s skipped via setTimeout)
-  eyeElement.style.transition = 'all.3s';
+  eyeElement.style.transition = 'all.2s';
 
   // No closing bracket is needed at end of radial-gradient, it's removed in build.js saves 2B
   // Having the wrapping of the eyeTypeIndex back to 0 in createEye() saves 2B
@@ -168,7 +168,7 @@ const startGame = () => {
               eyeElement.style.top =
                 `calc(50% - ${(eyeSize + eyeGap) * eyeIndex - (tubeBorderWidth + eyeSize + tubeSize - eyeSize)}px)`;
               });
-          }), floatingEyeOriginalTubeIndex === tubeIndex ? 0 : 200);
+          }), floatingEyeOriginalTubeIndex === tubeIndex ? 0 : 150);
         }
 
       // If there's >0 eyes in the tube
@@ -196,7 +196,7 @@ const startGame = () => {
         setTimeout(() => {
           tubes.push({});
           startGame();
-        }, 1000);
+        }, 800);
       }
     };
 
