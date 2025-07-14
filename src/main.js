@@ -27,7 +27,7 @@ const eyeTypes = [
 ];
 
 // Which eye is the first eye to be added to the tubes
-const eyeTypeIndex = Math.random() * eyeTypes.length | 0;
+const eyeTypeIndex = eyeTypes.length * Math.random() | 0;
 // We could non-randomise the eye you start with to save 8B:
 // const eyeTypeIndex = 0;
 
@@ -117,7 +117,7 @@ const startGame = () => {
     // Usually its good to have both eyeElement and eyeIndex but it save 1B not having i here
     tubeObject.eyes?.forEach((eyeElement) => {
       // Optional chaining is not needed because eyeElement is always defined (we're looping
-      // through them!) but it saves ~2B because .remove is always prefixed with '?'
+      // through them!) but it saves ~1B because .remove is always prefixed with '?'
       eyeElement?.remove();
     });
 
@@ -200,7 +200,7 @@ const startGame = () => {
   // The ugly loop reverseness with no afterthought helps with compression
   // Ideally would be 1000 * tubes.length but that costs a few bytes
   for (let shuffle = 3000; floatingEye || shuffle--;) {
-    tubes[Math.random() * tubes.length | 0].clickHandler();
+    tubes[tubes.length * Math.random() | 0].clickHandler();
   }
 
   gameStarted = true;

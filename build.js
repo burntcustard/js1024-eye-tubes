@@ -76,6 +76,9 @@ const code = minifiedJs.code
   // .replaceAll('{d.remove()}', 'd.remove()')
   // .replaceAll('t=>{t?.remove()}', 't=>t?.remove()')
 
+  // Replace =()=> with =v=>
+  // .replaceAll('=()=>', '=v=>')
+
   // Replace all double quotes with backticks for consistency
   .replaceAll('"', '`')
 
