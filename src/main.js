@@ -112,8 +112,8 @@ const startGame = () => {
     // Usually its good to have both eyeElement and eyeIndex but it save 1B not having i here
     tubeObject.eyes?.forEach((eyeElement) => {
       // Optional chaining is not needed because eyeElement is always defined (we're looping
-      // through them!) but it saves ~1B because .remove is always prefixed with '?'
-      eyeElement?.remove();
+      // through them!) but it (sometimes?) saves ~1B because .remove is always prefixed with '?'
+      eyeElement.remove();
     });
 
     // Remove the old tube element from DOM
