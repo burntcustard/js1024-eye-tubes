@@ -2,6 +2,8 @@
 
 [js1024 2025](https://js1024.fun/demos/2025) entry - the total size of [index.html](index.html) is exactly 1024B!
 
+<img src="https://github.com/burntcustard/js1024-eye-tubes/blob/main/thumbnailx4.png?raw=true" width="200" height="200" alt="Screenshot with blue background and 5 test tubes full of different types of eye balls">
+
 ## [Play online](https://burnt.io/js1024-eye-tubes)
 
 _Supports mouse, keyboard (tab, shift+tab, space), and touchscreen._
