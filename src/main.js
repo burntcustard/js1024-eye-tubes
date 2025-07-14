@@ -203,8 +203,6 @@ const startGame = () => {
     b.append(tubeElement);
   });
 
-  // renderAllEyes();
-
   // Shuffle by clicking random tubes, a lot, keeping going if there's a floating eye
   // The ugly loop reverseness with no afterthought helps with compression
   // Ideally would be 1000 * tubes.length but that costs a few bytes
